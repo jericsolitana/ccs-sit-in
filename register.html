@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">College of Computer Studies Sit-in Monitoring System</span>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" class="dropdown-toggle">Community</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="index.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+    <div class="register-wrapper">
+
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <img src="images/ccs-logo.png" alt="CCS Logo" class="panel-logo" />
+        <h2 class="panel-title">Join the CCS<br/>Sit-in System</h2>
+        <p class="panel-sub">
+          Create your account to access the laboratory
+          monitoring system of the College of Computer Studies.
+        </p>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <a href="index.html" class="back-btn">&#8592; Back</a>
+        <h1 class="form-title">Create Account</h1>
+        <p class="form-sub">Fill in the details below to register.</p>
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label for="idNumber">ID Number</label>
+            <input type="text" id="idNumber" placeholder="e.g. 2021-00001" />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="Solitana" />
+          </div>
+
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="Jeric" />
+          </div>
+
+          <div class="form-group full">
+            <label for="middleName">
+              Middle Name <span class="optional">(optional)</span>
+            </label>
+            <input type="text" id="middleName" placeholder="Geraldez" />
+          </div>
+
+          <div class="form-group">
+            <label for="course">Course</label>
+            <select id="course">
+              <option value="">Select course</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSIS">BSIS</option>
+              <option value="ACT">ACT</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="yearLevel">Year Level</label>
+            <select id="yearLevel">
+              <option value="">Select year level</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="solitanajericnino@gmail.com" />
+          </div>
+
+          <div class="form-group full">
+            <label for="address">Address</label>
+            <input type="text" id="address" placeholder="Street, Barangay, City" />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input type="password" id="password" placeholder="Create a password" />
+              <button type="button" class="toggle-pw" data-target="password">&#128065;</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="repeatPassword">Repeat Password</label>
+            <div class="input-wrap">
+              <input type="password" id="repeatPassword" placeholder="Confirm your password" />
+              <button type="button" class="toggle-pw" data-target="repeatPassword">&#128065;</button>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="btn-register" id="registerBtn">Register</button>
+        <p class="login-text">Already have an account? <a href="index.html">Login here</a></p>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

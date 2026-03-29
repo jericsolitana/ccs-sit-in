@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Profile — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">Dashboard</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Home</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle">Notification</a>
+        <ul class="dropdown-menu">
+          <li><a href="#">No new notifications</a></li>
+        </ul>
+      </li>
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="#" id="logoutBtn" class="btn-logout">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="ep-main">
+    <div class="ep-card">
+
+      <a href="dashboard.html" class="ep-back-btn">&#8592; Back to Dashboard</a>
+
+      <h1 class="ep-title">Edit Profile</h1>
+
+      <!-- AVATAR -->
+      <div class="ep-avatar-wrap">
+        <div class="ep-avatar" id="epAvatar">??</div>
+        <p class="ep-avatar-hint">Click to change profile photo</p>
+      </div>
+
+      <div class="ep-form">
+
+        <!-- ID Number (read-only) -->
+        <div class="ep-group full">
+          <label>ID Number</label>
+          <input type="text" id="epIdNumber" disabled />
+          <span class="ep-hint">ID Number cannot be changed.</span>
+        </div>
+
+        <!-- Last Name / First Name -->
+        <div class="ep-group">
+          <label>Last Name <span class="ep-required">*</span></label>
+          <input type="text" id="epLastName" placeholder="Last Name" />
+        </div>
+
+        <div class="ep-group">
+          <label>First Name <span class="ep-required">*</span></label>
+          <input type="text" id="epFirstName" placeholder="First Name" />
+        </div>
+
+        <!-- Middle Name / Course -->
+        <div class="ep-group">
+          <label>Middle Name</label>
+          <input type="text" id="epMiddleName" placeholder="Middle Name" />
+        </div>
+
+        <div class="ep-group">
+          <label>Course <span class="ep-required">*</span></label>
+          <select id="epCourse">
+            <option value="">Select course</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIS">BSIS</option>
+            <option value="ACT">ACT</option>
+          </select>
+        </div>
+
+        <!-- Year Level -->
+        <div class="ep-group">
+          <label>Year Level <span class="ep-required">*</span></label>
+          <select id="epYearLevel">
+            <option value="">Select year level</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+        </div>
+
+        <!-- Email -->
+        <div class="ep-group full">
+          <label>Email Address <span class="ep-required">*</span></label>
+          <input type="email" id="epEmail" placeholder="email@example.com" />
+        </div>
+
+        <!-- Address -->
+        <div class="ep-group full">
+          <label>Address <span class="ep-required">*</span></label>
+          <input type="text" id="epAddress" placeholder="Street, Barangay, City" />
+        </div>
+
+        <!-- Username -->
+        <div class="ep-group full">
+          <label>Username <span class="ep-required">*</span></label>
+          <input type="text" id="epUsername" placeholder="Username" />
+        </div>
+
+        <!-- Divider -->
+        <div class="ep-divider full">
+          <span>Change Password <span class="ep-hint-inline">(leave blank to keep current)</span></span>
+        </div>
+
+        <!-- New Password / Confirm Password -->
+        <div class="ep-group">
+          <label>New Password</label>
+          <div class="input-wrap">
+            <input type="password" id="epNewPassword" placeholder="Min. 6 characters" />
+            <button type="button" class="toggle-pw" data-target="epNewPassword">&#128065;</button>
+          </div>
+        </div>
+
+        <div class="ep-group">
+          <label>Confirm New Password</label>
+          <div class="input-wrap">
+            <input type="password" id="epConfirmPassword" placeholder="Repeat new password" />
+            <button type="button" class="toggle-pw" data-target="epConfirmPassword">&#128065;</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="ep-actions">
+        <button class="ep-save-btn" id="epSaveBtn">Save Changes</button>
+        <button class="ep-cancel-btn" id="epCancelBtn">Cancel</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

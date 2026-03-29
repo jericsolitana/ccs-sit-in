@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">Dashboard</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Home</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle">Notification</a>
+        <ul class="dropdown-menu">
+          <li><a href="#">No new notifications</a></li>
+        </ul>
+      </li>
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="#" id="logoutBtn" class="btn-logout">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="dashboard-main">
+
+    <!-- LEFT: Student Information -->
+    <div class="dash-card student-info-card">
+      <h3 class="dash-card-title">Student Information</h3>
+
+      <div class="student-avatar" id="studentAvatar">?</div>
+
+      <ul class="student-details" id="studentDetails">
+        <li><span class="detail-icon">👤</span> <span>Name: <strong id="infoName">—</strong></span></li>
+        <li><span class="detail-icon">📚</span> <span>Course: <strong id="infoCourse">—</strong></span></li>
+        <li><span class="detail-icon">📅</span> <span>Year: <strong id="infoYear">—</strong></span></li>
+        <li><span class="detail-icon">✉️</span> <span>Email: <strong id="infoEmail">—</strong></span></li>
+        <li><span class="detail-icon">📍</span> <span>Address: <strong id="infoAddress">—</strong></span></li>
+        <li><span class="detail-icon">🖥️</span> <span>Session: <strong id="infoSession">0</strong></span></li>
+      </ul>
+    </div>
+
+    <!-- MIDDLE: Announcement -->
+    <div class="dash-card announcement-card">
+      <h3 class="dash-card-title">
+        <span class="announce-icon">📢</span> Announcement
+      </h3>
+      <div class="announcement-list" id="announcementList">
+        <div class="announcement-item">
+          <p class="announce-author">CCS Admin | 2026-Mar-30</p>
+          <p class="announce-body">
+            <strong>Welcome to the CCS Sit-in Monitoring System!</strong> —
+            Please follow all laboratory rules and regulations.
+            Make sure to log your sit-in sessions properly.
+          </p>
+        </div>
+        <div class="announcement-item">
+          <p class="announce-author">CCS Admin | 2026-Jan-15</p>
+          <p class="announce-body">
+            <strong>Important Reminder</strong> —
+            All students must present their school ID before entering the laboratory.
+            Violations may result in suspension of sit-in privileges.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Rules and Regulation -->
+    <div class="dash-card rules-card">
+      <h3 class="dash-card-title">Rules and Regulation</h3>
+      <div class="rules-body">
+        <p class="rules-header">University of Cebu<br/>
+          <strong>COLLEGE OF INFORMATION &amp; COMPUTER STUDIES</strong>
+        </p>
+        <p class="rules-subheader">LABORATORY RULES AND REGULATIONS</p>
+        <p class="rules-intro">
+          To avoid embarrassment and maintain camaraderie with your friends and
+          superiors at our laboratories, please observe the following:
+        </p>
+        <ol class="rules-list">
+          <li>Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones, walkmans and other personal pieces of equipment must be switched off.</li>
+          <li>Games are not allowed inside the lab. This includes computer-related games, card games and other games that may disturb the operation of the lab.</li>
+          <li>Surfing the Internet is allowed only with the permission of the instructor. Downloading and installing of software are strictly prohibited.</li>
+          <li>Getting access to other websites not related to the course (especially pornographic and illicit sites) is strictly prohibited.</li>
+          <li>Deleting computer files, changing the setup of the computer is strictly prohibited.</li>
+          <li>Observe proper sitting posture at all times.</li>
+          <li>Laboratory gown must be worn at all times inside the laboratory.</li>
+          <li>All food and drinks are NOT allowed inside the laboratory.</li>
+          <li>Students must clean up their workstations before leaving the laboratory.</li>
+        </ol>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
