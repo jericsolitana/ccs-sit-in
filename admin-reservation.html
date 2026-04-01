@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — CCS Sit-in Monitoring System</title>
+  <title>Reservation — CCS Admin</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -20,43 +19,52 @@
       <li><a href="admin-records.html">View Sit-in Records</a></li>
       <li><a href="admin-reports.html">Sit-in Reports</a></li>
       <li><a href="admin-feedback.html">Feedback Reports</a></li>
-      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="admin-reservation.html" class="nav-active">Reservation</a></li>
       <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
     </ul>
   </nav>
 
-  <!-- MAIN DASHBOARD -->
-  <main class="admin-main">
+  <!-- MAIN -->
+  <main class="reservation-main">
 
-    <!-- LEFT: Statistics -->
-    <div class="admin-card stats-card">
-      <h3 class="admin-card-title">
-        <span>&#128202;</span> Statistics
-      </h3>
-      <div class="stats-counts">
-        <p><strong>Students Registered:</strong> <span id="statRegistered">0</span></p>
-        <p><strong>Currently Sit-in:</strong> <span id="statCurrent">0</span></p>
-        <p><strong>Total Sit-in:</strong> <span id="statTotal">0</span></p>
+    <h2 class="reservation-title">Reservation</h2>
+
+    <div class="reservation-grid">
+
+      <!-- LEFT: Computer Control -->
+      <div class="res-panel">
+        <div class="res-panel-header">Computer Control</div>
+        <div class="res-panel-body">
+          <div class="lab-filter-row">
+            <label>Lab</label>
+            <input type="text" id="labInput" value="524" />
+            <button class="btn-lab-filter" id="labFilterBtn">Filter</button>
+          </div>
+          <div class="computer-legend">
+            <span class="legend-dot available"></span> Available
+            <span class="legend-dot used"></span> Used
+          </div>
+          <div class="computer-grid" id="computerGrid"></div>
+        </div>
       </div>
-      <div class="chart-wrap">
-        <canvas id="sitinChart"></canvas>
+
+      <!-- MIDDLE: Reservation Requests -->
+      <div class="res-panel">
+        <div class="res-panel-header">Reservation Request</div>
+        <div class="res-panel-body" id="reservationRequests">
+          <p class="res-empty">No pending reservation requests.</p>
+        </div>
       </div>
+
+      <!-- RIGHT: Logs -->
+      <div class="res-panel">
+        <div class="res-panel-header">Logs</div>
+        <div class="res-panel-body" id="reservationLogs">
+          <p class="res-empty">No reservation logs yet.</p>
+        </div>
+      </div>
+
     </div>
-
-    <!-- RIGHT: Announcements -->
-    <div class="admin-card announce-card">
-      <h3 class="admin-card-title">
-        <span>&#128227;</span> Announcement
-      </h3>
-      <div class="new-announce">
-        <label class="announce-label">New Announcement</label>
-        <textarea id="newAnnounceText" rows="4" placeholder="Write your announcement here..."></textarea>
-        <button class="announce-submit-btn" id="announceSubmitBtn">Submit</button>
-      </div>
-      <h4 class="posted-title">Posted Announcement</h4>
-      <div class="posted-list" id="postedList"></div>
-    </div>
-
   </main>
 
   <!-- SEARCH MODAL -->

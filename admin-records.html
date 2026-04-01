@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sit-in Records — CCS Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-nav">
+    <span class="nav-brand">College of Computer Studies Admin</span>
+    <ul class="nav-links">
+      <li><a href="admin.html">Home</a></li>
+      <li><a href="#" id="openSearchBtn">Search</a></li>
+      <li><a href="admin-students.html">Students</a></li>
+      <li><a href="admin-sitin.html">Sit-in</a></li>
+      <li><a href="admin-records.html" class="nav-active">View Sit-in Records</a></li>
+      <li><a href="admin-reports.html">Sit-in Reports</a></li>
+      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="records-main">
+
+    <h2 class="records-title">Current Sit-in Records</h2>
+
+    <!-- CHARTS ROW -->
+    <div class="records-charts">
+      <div class="records-chart-card">
+        <p class="chart-label">Sit-ins by Programming Language</p>
+        <div class="chart-area">
+          <canvas id="langChart"></canvas>
+        </div>
+      </div>
+      <div class="records-chart-card">
+        <p class="chart-label">Sit-ins by Lab Room</p>
+        <div class="chart-area">
+          <canvas id="labChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="records-actions">
+      <button class="btn-reset-sessions" id="resetSessionsBtn">&#8635; Reset Sessions</button>
+      <button class="btn-clear-records" id="clearRecordsBtn">&#128465; Clear All Records</button>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="students-controls">
+      <div class="students-controls-left">
+        <div class="entries-label">
+          <select id="entriesPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+          entries per page
+        </div>
+      </div>
+      <div class="students-controls-right">
+        <div class="table-search-wrap">
+          <label>Search:</label>
+          <input type="text" id="tableSearchInput" />
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="students-table-wrap">
+      <table class="students-table">
+        <thead>
+          <tr>
+            <th>Sit-in Number <span class="sort-icon">⇅</span></th>
+            <th>ID Number <span class="sort-icon">⇅</span></th>
+            <th>Name <span class="sort-icon">⇅</span></th>
+            <th>Purpose <span class="sort-icon">⇅</span></th>
+            <th>Lab <span class="sort-icon">⇅</span></th>
+            <th>Login <span class="sort-icon">⇅</span></th>
+            <th>Logout <span class="sort-icon">⇅</span></th>
+            <th>Date <span class="sort-icon">⇅</span></th>
+          </tr>
+        </thead>
+        <tbody id="recordsTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sitin-footer">
+      <p class="entries-info" id="entriesInfo">Showing 0 entries</p>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+  </main>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <div class="search-box-header">
+        <span class="search-box-title">Search Student</span>
+        <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
+        <button class="search-go-btn" id="searchGoBtn">Search</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

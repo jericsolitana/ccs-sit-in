@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sit-in Reports — CCS Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-nav">
+    <span class="nav-brand">College of Computer Studies Admin</span>
+    <ul class="nav-links">
+      <li><a href="admin.html">Home</a></li>
+      <li><a href="#" id="openSearchBtn">Search</a></li>
+      <li><a href="admin-students.html">Students</a></li>
+      <li><a href="admin-sitin.html">Sit-in</a></li>
+      <li><a href="admin-records.html">View Sit-in Records</a></li>
+      <li><a href="admin-reports.html" class="nav-active">Sit-in Reports</a></li>
+      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="reports-main">
+
+    <h2 class="reports-title">Generate Reports</h2>
+
+    <!-- DATE SEARCH ROW -->
+    <div class="reports-search-row">
+      <input type="date" id="reportDateInput" />
+      <button class="btn-report-search" id="reportSearchBtn">Search</button>
+      <button class="btn-report-reset"  id="reportResetBtn">Reset</button>
+    </div>
+
+    <!-- EXPORT + FILTER ROW -->
+    <div class="reports-toolbar">
+      <div class="export-btns">
+        <button class="btn-export" id="exportCsvBtn">CSV</button>
+        <button class="btn-export" id="exportExcelBtn">Excel</button>
+        <button class="btn-export" id="exportPdfBtn">PDF</button>
+        <button class="btn-export" id="printBtn">Print</button>
+      </div>
+      <div class="reports-filter-wrap">
+        <label>Filter:</label>
+        <input type="text" id="reportFilterInput" placeholder="Filter..." />
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="students-table-wrap">
+      <table class="students-table">
+        <thead>
+          <tr>
+            <th>ID Number <span class="sort-icon">⇅</span></th>
+            <th>Name <span class="sort-icon">⇅</span></th>
+            <th>Purpose <span class="sort-icon">⇅</span></th>
+            <th>Laboratory <span class="sort-icon">⇅</span></th>
+            <th>Login <span class="sort-icon">⇅</span></th>
+            <th>Logout <span class="sort-icon">⇅</span></th>
+            <th>Date <span class="sort-icon">⇅</span></th>
+          </tr>
+        </thead>
+        <tbody id="reportsTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sitin-footer">
+      <p class="entries-info" id="entriesInfo">Showing 0 entries</p>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+  </main>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <div class="search-box-header">
+        <span class="search-box-title">Search Student</span>
+        <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
+        <button class="search-go-btn" id="searchGoBtn">Search</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

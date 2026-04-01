@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — CCS Sit-in Monitoring System</title>
+  <title>Feedback Reports — CCS Admin</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -19,42 +18,45 @@
       <li><a href="admin-sitin.html">Sit-in</a></li>
       <li><a href="admin-records.html">View Sit-in Records</a></li>
       <li><a href="admin-reports.html">Sit-in Reports</a></li>
-      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-feedback.html" class="nav-active">Feedback Reports</a></li>
       <li><a href="admin-reservation.html">Reservation</a></li>
       <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
     </ul>
   </nav>
 
-  <!-- MAIN DASHBOARD -->
-  <main class="admin-main">
+  <!-- MAIN -->
+  <main class="feedback-main">
 
-    <!-- LEFT: Statistics -->
-    <div class="admin-card stats-card">
-      <h3 class="admin-card-title">
-        <span>&#128202;</span> Statistics
-      </h3>
-      <div class="stats-counts">
-        <p><strong>Students Registered:</strong> <span id="statRegistered">0</span></p>
-        <p><strong>Currently Sit-in:</strong> <span id="statCurrent">0</span></p>
-        <p><strong>Total Sit-in:</strong> <span id="statTotal">0</span></p>
-      </div>
-      <div class="chart-wrap">
-        <canvas id="sitinChart"></canvas>
+    <h2 class="feedback-title">Feedback Report</h2>
+
+    <!-- TOOLBAR -->
+    <div class="feedback-toolbar">
+      <button class="btn-export" id="feedbackPrintBtn">Print</button>
+      <div class="reports-filter-wrap">
+        <label>Filter:</label>
+        <input type="text" id="feedbackFilterInput" placeholder="Filter..." />
       </div>
     </div>
 
-    <!-- RIGHT: Announcements -->
-    <div class="admin-card announce-card">
-      <h3 class="admin-card-title">
-        <span>&#128227;</span> Announcement
-      </h3>
-      <div class="new-announce">
-        <label class="announce-label">New Announcement</label>
-        <textarea id="newAnnounceText" rows="4" placeholder="Write your announcement here..."></textarea>
-        <button class="announce-submit-btn" id="announceSubmitBtn">Submit</button>
-      </div>
-      <h4 class="posted-title">Posted Announcement</h4>
-      <div class="posted-list" id="postedList"></div>
+    <!-- TABLE -->
+    <div class="students-table-wrap">
+      <table class="students-table">
+        <thead>
+          <tr>
+            <th>Student ID Number <span class="sort-icon">⇅</span></th>
+            <th>Laboratory <span class="sort-icon">⇅</span></th>
+            <th>Date <span class="sort-icon">⇅</span></th>
+            <th>Message <span class="sort-icon">⇅</span></th>
+          </tr>
+        </thead>
+        <tbody id="feedbackTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="sitin-footer">
+      <p class="entries-info" id="entriesInfo">Showing 0 entries</p>
+      <div class="pagination" id="pagination"></div>
     </div>
 
   </main>

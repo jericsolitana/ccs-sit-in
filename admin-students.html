@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Students — CCS Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-nav">
+    <span class="nav-brand">College of Computer Studies Admin</span>
+    <ul class="nav-links">
+      <li><a href="admin.html">Home</a></li>
+      <li><a href="#" id="openSearchBtn">Search</a></li>
+      <li><a href="admin-students.html" class="nav-active">Students</a></li>
+      <li><a href="admin-sitin.html">Sit-in</a></li>
+      <li><a href="admin-records.html">View Sit-in Records</a></li>
+      <li><a href="admin-reports.html">Sit-in Reports</a></li>
+      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="students-main">
+
+    <h2 class="students-title">Students Information</h2>
+
+    <!-- TOP CONTROLS -->
+    <div class="students-controls">
+      <div class="students-controls-left">
+        <button class="btn-add-student" id="openAddStudentBtn">Add Students</button>
+        <button class="btn-reset-session" id="resetAllSessionBtn">Reset All Session</button>
+      </div>
+      <div class="students-controls-right">
+        <div class="entries-label">
+          <select id="entriesPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+          entries per page
+        </div>
+        <div class="table-search-wrap">
+          <label>Search:</label>
+          <input type="text" id="tableSearchInput" />
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="students-table-wrap">
+      <table class="students-table" id="studentsTable">
+        <thead>
+          <tr>
+            <th>ID Number <span class="sort-icon">⇅</span></th>
+            <th>Name <span class="sort-icon">⇅</span></th>
+            <th>Year Level <span class="sort-icon">⇅</span></th>
+            <th>Course <span class="sort-icon">⇅</span></th>
+            <th>Remaining Session <span class="sort-icon">⇅</span></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody">
+        </tbody>
+      </table>
+    </div>
+
+    <p class="entries-info" id="entriesInfo">Showing 0 entries</p>
+
+  </main>
+
+  <!-- ADD STUDENT MODAL -->
+  <div class="modal-overlay" id="addStudentOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Add Student</span>
+        <button class="modal-close-btn" id="closeAddStudentBtn">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-grid">
+          <div class="modal-group full">
+            <label>ID Number <span class="ep-required">*</span></label>
+            <input type="text" id="addIdNumber" placeholder="e.g. 2021-00001" />
+          </div>
+          <div class="modal-group">
+            <label>Last Name <span class="ep-required">*</span></label>
+            <input type="text" id="addLastName" placeholder="Dela Cruz" />
+          </div>
+          <div class="modal-group">
+            <label>First Name <span class="ep-required">*</span></label>
+            <input type="text" id="addFirstName" placeholder="Juan" />
+          </div>
+          <div class="modal-group">
+            <label>Middle Name</label>
+            <input type="text" id="addMiddleName" placeholder="Santos (optional)" />
+          </div>
+          <div class="modal-group">
+            <label>Course <span class="ep-required">*</span></label>
+            <select id="addCourse">
+              <option value="">Select course</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSIS">BSIS</option>
+              <option value="ACT">ACT</option>
+            </select>
+          </div>
+          <div class="modal-group">
+            <label>Year Level <span class="ep-required">*</span></label>
+            <select id="addYearLevel">
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+          <div class="modal-group full">
+            <label>Email <span class="ep-required">*</span></label>
+            <input type="email" id="addEmail" placeholder="juan@email.com" />
+          </div>
+          <div class="modal-group full">
+            <label>Address <span class="ep-required">*</span></label>
+            <input type="text" id="addAddress" placeholder="Street, Barangay, City" />
+          </div>
+          <div class="modal-group full">
+            <label>Password <span class="ep-required">*</span></label>
+            <input type="password" id="addPassword" placeholder="Min. 6 characters" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save-btn" id="saveAddStudentBtn">Add Student</button>
+        <button class="modal-cancel-btn" id="cancelAddStudentBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT STUDENT MODAL -->
+  <div class="modal-overlay" id="editStudentOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Edit Student</span>
+        <button class="modal-close-btn" id="closeEditStudentBtn">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-grid">
+          <div class="modal-group full">
+            <label>ID Number</label>
+            <input type="text" id="editIdNumber" disabled />
+          </div>
+          <div class="modal-group">
+            <label>Last Name <span class="ep-required">*</span></label>
+            <input type="text" id="editLastName" />
+          </div>
+          <div class="modal-group">
+            <label>First Name <span class="ep-required">*</span></label>
+            <input type="text" id="editFirstName" />
+          </div>
+          <div class="modal-group">
+            <label>Middle Name</label>
+            <input type="text" id="editMiddleName" />
+          </div>
+          <div class="modal-group">
+            <label>Course <span class="ep-required">*</span></label>
+            <select id="editCourse">
+              <option value="">Select course</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSIS">BSIS</option>
+              <option value="ACT">ACT</option>
+            </select>
+          </div>
+          <div class="modal-group">
+            <label>Year Level <span class="ep-required">*</span></label>
+            <select id="editYearLevel">
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+          <div class="modal-group full">
+            <label>Email <span class="ep-required">*</span></label>
+            <input type="email" id="editEmail" />
+          </div>
+          <div class="modal-group full">
+            <label>Address <span class="ep-required">*</span></label>
+            <input type="text" id="editAddress" />
+          </div>
+          <div class="modal-group full">
+            <label>Remaining Sessions</label>
+            <input type="number" id="editSessions" min="0" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save-btn" id="saveEditStudentBtn">Save Changes</button>
+        <button class="modal-cancel-btn" id="cancelEditStudentBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <div class="search-box-header">
+        <span class="search-box-title">Search Student</span>
+        <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
+        <button class="search-go-btn" id="searchGoBtn">Search</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
