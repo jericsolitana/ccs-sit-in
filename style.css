@@ -17,13 +17,18 @@ body {
    ====================================== */
 
 nav {
-  background-color: #1e3a6e;
+  /* Swapped background-color for a linear gradient */
+  background: linear-gradient(90deg, #7126c2 0%, #c5a019 100%);
+  
   padding: 0 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 52px;
   flex-shrink: 0;
+  
+  /* Added a subtle shadow to make it pop against the light background */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
 }
 
 .nav-brand {
@@ -219,20 +224,30 @@ main {
 .forgot-link:hover { text-decoration: underline; }
 
 .btn-login {
-  width: 100%;
-  padding: 11px;
-  background-color: #2b7de9;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+    width: 100%;
+    padding: 11px;
+    /* Blend from Purple to Gold diagonally */
+    background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.btn-login:hover  { background-color: #1e6cd4; }
-.btn-login:active { transform: scale(0.99); }
+/* Adding a hover effect to make it feel interactive */
+.btn-login:hover {
+    background: linear-gradient(135deg, #5e3a85 0%, #c4b47a 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
 
 .register-text {
   text-align: center;
@@ -284,15 +299,19 @@ main {
 }
 
 .left-panel {
-  width: 280px;
-  flex-shrink: 0;
-  background: linear-gradient(160deg, #1e3a6e 0%, #2e5cbf 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 28px;
-  text-align: center;
+    width: 280px;
+    flex-shrink: 0;
+    /* Updated with your specific Purple and Gold hex codes */
+    background: linear-gradient(160deg, #7126c2 0%, #c5a019 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    text-align: center;
+    
+    /* Optional: Ensures any text inside the panel stays sharp against the gradient */
+    color: #ffffff;
 }
 
 .panel-logo {
@@ -429,7 +448,8 @@ main {
   width: 100%;
   margin-top: 22px;
   padding: 12px;
-  background-color: #1e3a6e;
+  /* Updated to your specific blend */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -437,11 +457,18 @@ main {
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 0.5px;
-  transition: background 0.2s, transform 0.1s;
+  /* Updated transition to handle the background change smoothly */
+  transition: opacity 0.2s, transform 0.1s, filter 0.2s;
 }
 
-.btn-register:hover  { background-color: #2b56a8; }
-.btn-register:active { transform: scale(0.99); }
+/* Hover effect: slightly brightens the button since gradients don't 'color-swap' easily */
+.btn-register:hover {
+  filter: brightness(1.1);
+}
+
+.btn-register:active {
+  transform: scale(0.99);
+}
 
 .login-text {
   text-align: center;
@@ -539,16 +566,30 @@ main {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
   color: #ffffff;
+  /* Updated transition to include filter for smooth hovering */
+  transition: filter 0.2s, transform 0.1s;
 }
 
-.popup-btn--success       { background-color: #2b7de9; }
-.popup-btn--success:hover { background-color: #1e6cd4; }
-.popup-btn--register       { background-color: #1e3a6e; }
-.popup-btn--register:hover { background-color: #2b56a8; }
-.popup-btn:active          { transform: scale(0.98); }
+/* Success Button: Standard Purple-to-Gold blend */
+.popup-btn--success { 
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%); 
+}
 
+/* Register Button: Reverse blend (Gold-to-Purple) to distinguish it */
+.popup-btn--register { 
+  background: linear-gradient(135deg, #c5a019 0%, #7126c2 100%); 
+}
+
+/* Hover effects for both */
+.popup-btn--success:hover, 
+.popup-btn--register:hover { 
+  filter: brightness(1.1); 
+}
+
+.popup-btn:active { 
+  transform: scale(0.98); 
+}
 
 /* ======================================
    STUDENT DASHBOARD (dashboard.html)
@@ -851,7 +892,9 @@ main {
 }
 
 .admin-card-title {
-  background-color: #2b7de9;
+  /* Blend from Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(110deg, #7126c2 0%, #c5a019 100%);
+  
   color: #ffffff;
   font-size: 14px;
   font-weight: 600;
@@ -860,6 +903,10 @@ main {
   align-items: center;
   gap: 8px;
   margin: 0;
+  
+  /* Optional: adds a slight rounded top if your cards have rounded corners */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 .stats-counts { padding: 16px 20px 8px; display: flex; flex-direction: column; gap: 6px; }
@@ -925,6 +972,8 @@ main {
 .posted-empty { font-size: 13px; color: #aaa; text-align: center; padding: 20px 0; }
 
 @media (max-width: 780px) { .admin-main { grid-template-columns: 1fr; } }
+
+
 
 
 /* ======================================
@@ -2053,20 +2102,26 @@ main {
   width: 100%;
   margin-top: 18px;
   padding: 10px;
-  background-color: #2b7de9;
+  /* Applying the CCS blend: #7126c2 to #c5a019 */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
   color: #ffffff;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
   text-align: center;
+  /* Added filter to transition for a smooth hover glow */
+  transition: filter 0.2s, transform 0.1s;
 }
 
-.btn-sitin-request:hover  { background-color: #1e6cd4; }
-.btn-sitin-request:active { transform: scale(0.99); }
+.btn-sitin-request:hover { 
+  filter: brightness(1.1); 
+}
 
+.btn-sitin-request:active { 
+  transform: scale(0.99); 
+}
 /* ── SIT-IN REQUEST MODAL ── */
 .sitin-modal-overlay {
   position: fixed;
@@ -2202,3 +2257,84 @@ main {
   transition: background 0.2s;
 }
 .btn-sitin-cancel:hover { background: #f5f5f5; }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── NOTIFICATION BADGE ── */
+.notif-toggle { position: relative; }
+
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #e02020;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+/* ── NOTIFICATION DROPDOWN MENU ── */
+.notif-menu {
+  min-width: 280px !important;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px 0 !important;
+}
+
+.notif-item {
+  display: block !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: default !important;
+}
+
+.notif-item:last-child { border-bottom: none; }
+
+.notif-item:hover { background: #f7f9ff !important; }
+
+.notif-item-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2b7de9 !important;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.notif-item-text {
+  font-size: 13px;
+  color: #333 !important;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.notif-empty {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #aaa !important;
+  text-align: center;
+  cursor: default !important;
+}
+
+.notif-mark-read {
+  display: block;
+  text-align: center;
+  padding: 8px 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #2b7de9 !important;
+  border-top: 1px solid #eef0f5;
+  cursor: pointer !important;
+}
+
+.notif-mark-read:hover { background: #f0f4ff !important; }
