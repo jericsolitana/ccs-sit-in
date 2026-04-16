@@ -35,7 +35,7 @@
 
       <div class="student-avatar" id="studentAvatar">?</div>
 
-      <ul class="student-details" id="studentDetails">
+      <ul class="student-details">
         <li><span class="detail-icon">👤</span> <span>Name: <strong id="infoName">—</strong></span></li>
         <li><span class="detail-icon">📚</span> <span>Course: <strong id="infoCourse">—</strong></span></li>
         <li><span class="detail-icon">📅</span> <span>Year: <strong id="infoYear">—</strong></span></li>
@@ -43,6 +43,9 @@
         <li><span class="detail-icon">📍</span> <span>Address: <strong id="infoAddress">—</strong></span></li>
         <li><span class="detail-icon">🖥️</span> <span>Session: <strong id="infoSession">0</strong></span></li>
       </ul>
+
+      <!-- SIT-IN REQUEST BUTTON -->
+      <button class="btn-sitin-request" id="openSitinModalBtn">&#43; Sit-in Request</button>
     </div>
 
     <!-- MIDDLE: Announcement -->
@@ -56,15 +59,6 @@
           <p class="announce-body">
             <strong>Welcome to the CCS Sit-in Monitoring System!</strong> —
             Please follow all laboratory rules and regulations.
-            Make sure to log your sit-in sessions properly.
-          </p>
-        </div>
-        <div class="announcement-item">
-          <p class="announce-author">CCS Admin | 2026-Jan-15</p>
-          <p class="announce-body">
-            <strong>Important Reminder</strong> —
-            All students must present their school ID before entering the laboratory.
-            Violations may result in suspension of sit-in privileges.
           </p>
         </div>
       </div>
@@ -86,7 +80,7 @@
           <li>Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones, walkmans and other personal pieces of equipment must be switched off.</li>
           <li>Games are not allowed inside the lab. This includes computer-related games, card games and other games that may disturb the operation of the lab.</li>
           <li>Surfing the Internet is allowed only with the permission of the instructor. Downloading and installing of software are strictly prohibited.</li>
-          <li>Getting access to other websites not related to the course (especially pornographic and illicit sites) is strictly prohibited.</li>
+          <li>Getting access to other websites not related to the course is strictly prohibited.</li>
           <li>Deleting computer files, changing the setup of the computer is strictly prohibited.</li>
           <li>Observe proper sitting posture at all times.</li>
           <li>Laboratory gown must be worn at all times inside the laboratory.</li>
@@ -97,6 +91,55 @@
     </div>
 
   </main>
+
+  <!-- SIT-IN REQUEST MODAL -->
+  <div class="sitin-modal-overlay" id="sitinModalOverlay">
+    <div class="sitin-modal-box">
+      <div class="sitin-modal-header">
+        <h3>Sit-in Request</h3>
+        <button class="sitin-modal-close" id="closeSitinModalBtn">&#10005;</button>
+      </div>
+      <div class="sitin-modal-body">
+
+        <p class="sitin-session-info">
+          Remaining Sessions: <strong id="modalSessionCount">0</strong>
+        </p>
+
+        <div class="sitin-form-group">
+          <label>Purpose / Programming Language</label>
+          <select id="sitinPurpose">
+            <option value="">Select purpose</option>
+            <option value="C">C</option>
+            <option value="C#">C#</option>
+            <option value="Java">Java</option>
+            <option value="ASP.Net">ASP.Net</option>
+            <option value="PHP">PHP</option>
+            <option value="Python">Python</option>
+            <option value="HTML/CSS">HTML/CSS</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="sitin-form-group">
+          <label>Laboratory</label>
+          <select id="sitinLab">
+            <option value="">Select laboratory</option>
+            <option value="524">Lab 524</option>
+            <option value="526">Lab 526</option>
+            <option value="528">Lab 528</option>
+            <option value="530">Lab 530</option>
+            <option value="542">Lab 542</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="sitin-modal-footer">
+        <button class="btn-sitin-submit" id="submitSitinBtn">Submit</button>
+        <button class="btn-sitin-cancel" id="cancelSitinBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

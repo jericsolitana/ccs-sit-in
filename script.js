@@ -228,6 +228,64 @@ if (studentAvatar) {
   }
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_current_user'); window.location.href = 'index.html'; });
+
+  // ── SIT-IN REQUEST MODAL ──
+  const sitinOverlay   = document.getElementById('sitinModalOverlay');
+  const openSitinBtn   = document.getElementById('openSitinModalBtn');
+  const closeSitinBtn  = document.getElementById('closeSitinModalBtn');
+  const cancelSitinBtn = document.getElementById('cancelSitinBtn');
+  const submitSitinBtn = document.getElementById('submitSitinBtn');
+
+  if (sitinOverlay && openSitinBtn) {
+    openSitinBtn.addEventListener('click', () => {
+      const freshUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+      const sessions  = freshUser ? (freshUser.sessions !== undefined ? freshUser.sessions : 30) : 0;
+      document.getElementById('modalSessionCount').textContent = sessions;
+      if (sessions <= 0) { alert('You have no remaining sessions. Please contact the admin.'); return; }
+      sitinOverlay.classList.add('active');
+    });
+
+    closeSitinBtn.addEventListener('click',  () => sitinOverlay.classList.remove('active'));
+    cancelSitinBtn.addEventListener('click', () => sitinOverlay.classList.remove('active'));
+    sitinOverlay.addEventListener('click', (e) => { if (e.target === sitinOverlay) sitinOverlay.classList.remove('active'); });
+
+    submitSitinBtn.addEventListener('click', () => {
+      const purpose = document.getElementById('sitinPurpose').value;
+      const lab     = document.getElementById('sitinLab').value;
+      if (!purpose) { alert('Please select a purpose.'); return; }
+      if (!lab)     { alert('Please select a laboratory.'); return; }
+
+      const freshUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+      if (!freshUser) { window.location.href = 'index.html'; return; }
+      if ((freshUser.sessions || 0) <= 0) { alert('You have no remaining sessions.'); sitinOverlay.classList.remove('active'); return; }
+
+      const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+      const now    = new Date();
+      sitins.push({
+        sitId:    'SIT-' + Date.now(),
+        idNumber:  freshUser.idNumber,
+        purpose:   purpose,
+        lab:       lab,
+        session:   freshUser.sessions,
+        status:   'active',
+        timeIn:    now.toLocaleTimeString(),
+        timeOut:   null,
+        date:      getNow(),
+      });
+      localStorage.setItem('ccs_sitins', JSON.stringify(sitins));
+
+      sitinOverlay.classList.remove('active');
+      document.getElementById('sitinPurpose').value = '';
+      document.getElementById('sitinLab').value     = '';
+
+      showPopup({
+        title:   'Sit-in Request Submitted!',
+        message: `Your sit-in has been recorded.<br/>Lab: <strong>${lab}</strong> | Purpose: <strong>${purpose}</strong>`,
+        btnText: 'OK',
+        type:    'success',
+      });
+    });
+  }
 }
 
 
@@ -298,11 +356,12 @@ if (epSaveBtn) {
 //  ADMIN DASHBOARD (admin.html)
 // ======================================
 
-const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-if (adminLogoutBtn) {
+const sitinChartEl = document.getElementById('sitinChart');
+if (sitinChartEl) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
-  adminLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
+  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+  if (adminLogoutBtn) adminLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
   const users  = JSON.parse(localStorage.getItem('ccs_users')  || '[]');
   const sitIns = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
@@ -360,12 +419,13 @@ if (studentsTableBody) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
   let currentEditId = null;
+  let currentViewId = null;
   let entriesLimit  = 10;
   let searchQuery   = '';
 
   // ── RENDER TABLE ──
   function renderTable() {
-    const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+    const users    = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const filtered = users.filter(u => {
       const fullName = `${u.firstName} ${u.lastName} ${u.idNumber}`.toLowerCase();
       return fullName.includes(searchQuery.toLowerCase());
@@ -389,9 +449,10 @@ if (studentsTableBody) {
         <td>${u.course}</td>
         <td>${u.sessions !== undefined ? u.sessions : 30}</td>
         <td>
-          <button class="btn-edit"   onclick="openEditModal('${u.idNumber}')">Edit</button>
+          <button class="btn-view"      onclick="openViewModal('${u.idNumber}')">View</button>
+          <button class="btn-edit"      onclick="openEditModal('${u.idNumber}')">Edit</button>
           <button class="btn-reset-one" onclick="resetOneSession('${u.idNumber}')">Reset</button>
-          <button class="btn-delete" onclick="deleteStudent('${u.idNumber}')">Delete</button>
+          <button class="btn-delete"    onclick="deleteStudent('${u.idNumber}')">Delete</button>
         </td>`;
       studentsTableBody.appendChild(tr);
     });
@@ -402,19 +463,9 @@ if (studentsTableBody) {
 
   renderTable();
 
-  // ── ENTRIES PER PAGE ──
-  document.getElementById('entriesPerPage').addEventListener('change', (e) => {
-    entriesLimit = parseInt(e.target.value);
-    renderTable();
-  });
+  document.getElementById('entriesPerPage').addEventListener('change', (e) => { entriesLimit = parseInt(e.target.value); renderTable(); });
+  document.getElementById('tableSearchInput').addEventListener('input', (e) => { searchQuery = e.target.value; renderTable(); });
 
-  // ── TABLE SEARCH ──
-  document.getElementById('tableSearchInput').addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    renderTable();
-  });
-
-  // ── RESET ALL SESSIONS ──
   document.getElementById('resetAllSessionBtn').addEventListener('click', () => {
     if (!confirm('Reset sessions for ALL students to 30?')) return;
     const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
@@ -423,14 +474,12 @@ if (studentsTableBody) {
     renderTable();
   });
 
-  // ── RESET ONE SESSION ──
   window.resetOneSession = function(idNumber) {
     const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const idx   = users.findIndex(u => u.idNumber === idNumber);
     if (idx !== -1) { users[idx].sessions = 30; localStorage.setItem('ccs_users', JSON.stringify(users)); renderTable(); }
   };
 
-  // ── DELETE STUDENT ──
   window.deleteStudent = function(idNumber) {
     if (!confirm(`Delete student ${idNumber}? This cannot be undone.`)) return;
     let users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
@@ -439,10 +488,45 @@ if (studentsTableBody) {
     renderTable();
   };
 
+  // ── VIEW STUDENT MODAL ──
+  const viewOverlay = document.getElementById('viewStudentOverlay');
+
+  window.openViewModal = function(idNumber) {
+    const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+    const u     = users.find(u => u.idNumber === idNumber);
+    if (!u) return;
+    currentViewId = idNumber;
+
+    const initials = (u.firstName[0] || '') + (u.lastName[0] || '');
+    document.getElementById('viewAvatar').textContent   = initials.toUpperCase();
+    document.getElementById('viewName').textContent     = `${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}`;
+    document.getElementById('viewIdBadge').textContent  = u.idNumber;
+    document.getElementById('viewCourse').textContent   = u.course     || '—';
+    document.getElementById('viewYear').textContent     = u.yearLevel  || '—';
+    document.getElementById('viewEmail').textContent    = u.email      || '—';
+    document.getElementById('viewAddress').textContent  = u.address    || '—';
+    document.getElementById('viewMiddle').textContent   = u.middleName || '—';
+    document.getElementById('viewUsername').textContent = u.username   || '—';
+    document.getElementById('viewSessions').textContent = u.sessions !== undefined ? u.sessions : 30;
+
+    viewOverlay.classList.add('active');
+  };
+
+  if (viewOverlay) {
+    document.getElementById('closeViewStudentBtn').addEventListener('click',  () => viewOverlay.classList.remove('active'));
+    document.getElementById('cancelViewStudentBtn').addEventListener('click', () => viewOverlay.classList.remove('active'));
+    viewOverlay.addEventListener('click', (e) => { if (e.target === viewOverlay) viewOverlay.classList.remove('active'); });
+  }
+
+  window.switchToEdit = function() {
+    if (viewOverlay) viewOverlay.classList.remove('active');
+    openEditModal(currentViewId);
+  };
+
   // ── ADD STUDENT MODAL ──
   const addOverlay = document.getElementById('addStudentOverlay');
-  document.getElementById('openAddStudentBtn').addEventListener('click', () => { addOverlay.classList.add('active'); });
-  document.getElementById('closeAddStudentBtn').addEventListener('click', () => addOverlay.classList.remove('active'));
+  document.getElementById('openAddStudentBtn').addEventListener('click',   () => addOverlay.classList.add('active'));
+  document.getElementById('closeAddStudentBtn').addEventListener('click',  () => addOverlay.classList.remove('active'));
   document.getElementById('cancelAddStudentBtn').addEventListener('click', () => addOverlay.classList.remove('active'));
   addOverlay.addEventListener('click', (e) => { if (e.target === addOverlay) addOverlay.classList.remove('active'); });
 
@@ -482,8 +566,6 @@ if (studentsTableBody) {
     });
     localStorage.setItem('ccs_users', JSON.stringify(users));
     addOverlay.classList.remove('active');
-
-    // Clear fields
     [idNumber, lastName, firstName, middleName, email, address, password].forEach(el => el.value = '');
     course.value = ''; yearLevel.value = '';
     renderTable();
@@ -491,7 +573,7 @@ if (studentsTableBody) {
 
   // ── EDIT STUDENT MODAL ──
   const editOverlay = document.getElementById('editStudentOverlay');
-  document.getElementById('closeEditStudentBtn').addEventListener('click', () => editOverlay.classList.remove('active'));
+  document.getElementById('closeEditStudentBtn').addEventListener('click',  () => editOverlay.classList.remove('active'));
   document.getElementById('cancelEditStudentBtn').addEventListener('click', () => editOverlay.classList.remove('active'));
   editOverlay.addEventListener('click', (e) => { if (e.target === editOverlay) editOverlay.classList.remove('active'); });
 
@@ -517,7 +599,6 @@ if (studentsTableBody) {
     const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const idx   = users.findIndex(u => u.idNumber === currentEditId);
     if (idx === -1) return;
-
     users[idx] = {
       ...users[idx],
       lastName:   document.getElementById('editLastName').value.trim(),
@@ -529,13 +610,11 @@ if (studentsTableBody) {
       address:    document.getElementById('editAddress').value.trim(),
       sessions:   parseInt(document.getElementById('editSessions').value) || 0,
     };
-
     localStorage.setItem('ccs_users', JSON.stringify(users));
     editOverlay.classList.remove('active');
     renderTable();
   });
 
-  // ── LOGOUT ──
   const adminLogout = document.getElementById('adminLogoutBtn');
   if (adminLogout) adminLogout.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
@@ -548,7 +627,6 @@ if (studentsTableBody) {
 // ======================================
 
 const sitinTableBody = document.getElementById('sitinTableBody');
-
 if (sitinTableBody) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
@@ -556,94 +634,59 @@ if (sitinTableBody) {
   let searchQuery  = '';
   let currentPage  = 1;
 
-  function getSitins() {
-    return JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
-  }
+  function getSitins() { return JSON.parse(localStorage.getItem('ccs_sitins') || '[]'); }
 
   function renderSitin() {
     const sitins = getSitins();
     const users  = JSON.parse(localStorage.getItem('ccs_users') || '[]');
-
     const filtered = sitins.filter(s => {
       const user = users.find(u => u.idNumber === s.idNumber);
       const name = user ? `${user.firstName} ${user.lastName}`.toLowerCase() : '';
-      return name.includes(searchQuery.toLowerCase()) ||
-             s.idNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      return name.includes(searchQuery.toLowerCase()) || s.idNumber.toLowerCase().includes(searchQuery.toLowerCase());
     });
-
     const totalPages = Math.max(1, Math.ceil(filtered.length / entriesLimit));
     if (currentPage > totalPages) currentPage = totalPages;
-
     const start = (currentPage - 1) * entriesLimit;
     const shown = filtered.slice(start, start + entriesLimit);
-
     sitinTableBody.innerHTML = '';
-
     if (shown.length === 0) {
       sitinTableBody.innerHTML = `<tr><td colspan="8" class="table-empty">No data available</td></tr>`;
     } else {
-      shown.forEach((s, idx) => {
-        const user    = users.find(u => u.idNumber === s.idNumber);
-        const name    = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
-        const status  = s.status === 'active'
-          ? `<span class="badge-active">Active</span>`
-          : `<span class="badge-done">Done</span>`;
-        const actions = s.status === 'active'
-          ? `<button class="btn-end-session" onclick="endSession('${s.sitId}')">End Session</button>`
-          : '—';
+      shown.forEach((s) => {
+        const user   = users.find(u => u.idNumber === s.idNumber);
+        const name   = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
+        const status = s.status === 'active' ? `<span class="badge-active">Active</span>` : `<span class="badge-done">Done</span>`;
+        const actions = s.status === 'active' ? `<button class="btn-end-session" onclick="endSession('${s.sitId}')">End Session</button>` : '—';
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${s.sitId}</td>
-          <td>${s.idNumber}</td>
-          <td>${name}</td>
-          <td>${s.purpose || '—'}</td>
-          <td>${s.lab || '—'}</td>
-          <td>${s.session || '—'}</td>
-          <td>${status}</td>
-          <td>${actions}</td>`;
+        tr.innerHTML = `<td>${s.sitId}</td><td>${s.idNumber}</td><td>${name}</td><td>${s.purpose||'—'}</td><td>${s.lab||'—'}</td><td>${s.session||'—'}</td><td>${status}</td><td>${actions}</td>`;
         sitinTableBody.appendChild(tr);
       });
     }
-
-    // Update info
     const from = filtered.length === 0 ? 0 : start + 1;
     const to   = Math.min(start + entriesLimit, filtered.length);
-    document.getElementById('entriesInfo').textContent =
-      filtered.length === 0
-        ? 'Showing 0 entries'
-        : `Showing ${from} to ${to} of ${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'}`;
-
+    document.getElementById('entriesInfo').textContent = filtered.length === 0 ? 'Showing 0 entries' : `Showing ${from} to ${to} of ${filtered.length} entries`;
     renderPagination(totalPages);
   }
 
   function renderPagination(totalPages) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
-
     const prev = document.createElement('button');
-    prev.className = 'page-btn';
-    prev.innerHTML = '&#171;';
-    prev.disabled  = currentPage === 1;
+    prev.className = 'page-btn'; prev.innerHTML = '&#171;'; prev.disabled = currentPage === 1;
     prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderSitin(); } });
     pagination.appendChild(prev);
-
     for (let i = 1; i <= totalPages; i++) {
       const btn = document.createElement('button');
-      btn.className = `page-btn${i === currentPage ? ' active' : ''}`;
-      btn.textContent = i;
+      btn.className = `page-btn${i === currentPage ? ' active' : ''}`; btn.textContent = i;
       btn.addEventListener('click', () => { currentPage = i; renderSitin(); });
       pagination.appendChild(btn);
     }
-
     const next = document.createElement('button');
-    next.className = 'page-btn';
-    next.innerHTML = '&#187;';
-    next.disabled  = currentPage === totalPages;
+    next.className = 'page-btn'; next.innerHTML = '&#187;'; next.disabled = currentPage === totalPages;
     next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderSitin(); } });
     pagination.appendChild(next);
   }
 
-  // End a session
   window.endSession = function(sitId) {
     if (!confirm('End this sit-in session?')) return;
     const sitins = getSitins();
@@ -651,35 +694,17 @@ if (sitinTableBody) {
     if (idx !== -1) {
       sitins[idx].status  = 'done';
       sitins[idx].timeOut = new Date().toLocaleTimeString();
-
-      // Deduct session from student
-      const users    = JSON.parse(localStorage.getItem('ccs_users') || '[]');
-      const userIdx  = users.findIndex(u => u.idNumber === sitins[idx].idNumber);
-      if (userIdx !== -1 && users[userIdx].sessions > 0) {
-        users[userIdx].sessions -= 1;
-        localStorage.setItem('ccs_users', JSON.stringify(users));
-      }
-
+      const users   = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+      const userIdx = users.findIndex(u => u.idNumber === sitins[idx].idNumber);
+      if (userIdx !== -1 && users[userIdx].sessions > 0) { users[userIdx].sessions -= 1; localStorage.setItem('ccs_users', JSON.stringify(users)); }
       localStorage.setItem('ccs_sitins', JSON.stringify(sitins));
       renderSitin();
     }
   };
 
-  // Entries per page
-  document.getElementById('entriesPerPage').addEventListener('change', (e) => {
-    entriesLimit = parseInt(e.target.value);
-    currentPage  = 1;
-    renderSitin();
-  });
+  document.getElementById('entriesPerPage').addEventListener('change', (e) => { entriesLimit = parseInt(e.target.value); currentPage = 1; renderSitin(); });
+  document.getElementById('tableSearchInput').addEventListener('input', (e) => { searchQuery = e.target.value; currentPage = 1; renderSitin(); });
 
-  // Search
-  document.getElementById('tableSearchInput').addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    currentPage = 1;
-    renderSitin();
-  });
-
-  // Logout
   const adminLogout2 = document.getElementById('adminLogoutBtn');
   if (adminLogout2) adminLogout2.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
@@ -693,7 +718,6 @@ if (sitinTableBody) {
 // ======================================
 
 const recordsTableBody = document.getElementById('recordsTableBody');
-
 if (recordsTableBody) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
@@ -701,134 +725,69 @@ if (recordsTableBody) {
   let searchQuery  = '';
   let currentPage  = 1;
 
-  function getRecords() {
-    // Show only completed (done) sit-ins as records
-    return JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
-  }
+  function getRecords() { return JSON.parse(localStorage.getItem('ccs_sitins') || '[]'); }
 
   function renderCharts() {
     const sitins = getRecords();
-    const users  = JSON.parse(localStorage.getItem('ccs_users') || '[]');
-
-    // Sit-ins by Purpose (Programming Language)
-    const purposeCounts = {};
+    const purposeCounts = {}, labCounts = {};
     sitins.forEach(s => {
-      const key = s.purpose || 'Unknown';
-      purposeCounts[key] = (purposeCounts[key] || 0) + 1;
+      const pk = s.purpose || 'Unknown'; purposeCounts[pk] = (purposeCounts[pk] || 0) + 1;
+      const lk = s.lab || 'Unknown';     labCounts[lk]     = (labCounts[lk]     || 0) + 1;
     });
-
-    // Sit-ins by Lab Room
-    const labCounts = {};
-    sitins.forEach(s => {
-      const key = s.lab || 'Unknown';
-      labCounts[key] = (labCounts[key] || 0) + 1;
-    });
-
-    const langLabels = Object.keys(purposeCounts).length ? Object.keys(purposeCounts) : ['No Data'];
-    const langData   = Object.keys(purposeCounts).length ? Object.values(purposeCounts) : [0];
-    const labLabels  = Object.keys(labCounts).length ? Object.keys(labCounts) : ['No Data'];
-    const labData    = Object.keys(labCounts).length ? Object.values(labCounts) : [0];
-
-    const barOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } },
-        x: { ticks: { font: { size: 11 } } }
-      }
-    };
-
-    new Chart(document.getElementById('langChart').getContext('2d'), {
-      type: 'bar',
-      data: { labels: langLabels, datasets: [{ data: langData, backgroundColor: '#2b7de9', borderRadius: 4 }] },
-      options: barOptions
-    });
-
-    new Chart(document.getElementById('labChart').getContext('2d'), {
-      type: 'bar',
-      data: { labels: labLabels, datasets: [{ data: labData, backgroundColor: '#4caf50', borderRadius: 4 }] },
-      options: barOptions
-    });
+    const barOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } };
+    new Chart(document.getElementById('langChart').getContext('2d'), { type: 'bar', data: { labels: Object.keys(purposeCounts).length ? Object.keys(purposeCounts) : ['No Data'], datasets: [{ data: Object.keys(purposeCounts).length ? Object.values(purposeCounts) : [0], backgroundColor: '#2b7de9', borderRadius: 4 }] }, options: barOptions });
+    new Chart(document.getElementById('labChart').getContext('2d'),  { type: 'bar', data: { labels: Object.keys(labCounts).length ? Object.keys(labCounts) : ['No Data'],     datasets: [{ data: Object.keys(labCounts).length ? Object.values(labCounts) : [0],         backgroundColor: '#4caf50', borderRadius: 4 }] }, options: barOptions });
   }
 
   function renderRecords() {
     const sitins = getRecords();
     const users  = JSON.parse(localStorage.getItem('ccs_users') || '[]');
-
     const filtered = sitins.filter(s => {
       const user = users.find(u => u.idNumber === s.idNumber);
       const name = user ? `${user.firstName} ${user.lastName}`.toLowerCase() : '';
-      return name.includes(searchQuery.toLowerCase()) ||
-             s.idNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      return name.includes(searchQuery.toLowerCase()) || s.idNumber.toLowerCase().includes(searchQuery.toLowerCase());
     });
-
     const totalPages = Math.max(1, Math.ceil(filtered.length / entriesLimit));
     if (currentPage > totalPages) currentPage = totalPages;
-
     const start = (currentPage - 1) * entriesLimit;
     const shown = filtered.slice(start, start + entriesLimit);
-
     recordsTableBody.innerHTML = '';
-
     if (shown.length === 0) {
       recordsTableBody.innerHTML = `<tr><td colspan="8" class="table-empty">No data available</td></tr>`;
     } else {
       shown.forEach((s, idx) => {
-        const user   = users.find(u => u.idNumber === s.idNumber);
-        const name   = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
-        const tr     = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${start + idx + 1}</td>
-          <td>${s.idNumber}</td>
-          <td>${name}</td>
-          <td>${s.purpose || '—'}</td>
-          <td>${s.lab || '—'}</td>
-          <td>${s.timeIn  || '—'}</td>
-          <td>${s.timeOut || '—'}</td>
-          <td>${s.date    || '—'}</td>`;
+        const user = users.find(u => u.idNumber === s.idNumber);
+        const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
+        const tr   = document.createElement('tr');
+        tr.innerHTML = `<td>${start+idx+1}</td><td>${s.idNumber}</td><td>${name}</td><td>${s.purpose||'—'}</td><td>${s.lab||'—'}</td><td>${s.timeIn||'—'}</td><td>${s.timeOut||'—'}</td><td>${s.date||'—'}</td>`;
         recordsTableBody.appendChild(tr);
       });
     }
-
     const from = filtered.length === 0 ? 0 : start + 1;
     const to   = Math.min(start + entriesLimit, filtered.length);
-    document.getElementById('entriesInfo').textContent =
-      filtered.length === 0
-        ? 'Showing 0 entries'
-        : `Showing ${from} to ${to} of ${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'}`;
-
+    document.getElementById('entriesInfo').textContent = filtered.length === 0 ? 'Showing 0 entries' : `Showing ${from} to ${to} of ${filtered.length} entries`;
     renderRecordsPagination(totalPages);
   }
 
   function renderRecordsPagination(totalPages) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
-
     const prev = document.createElement('button');
-    prev.className = 'page-btn';
-    prev.innerHTML = '&#171;';
-    prev.disabled  = currentPage === 1;
+    prev.className = 'page-btn'; prev.innerHTML = '&#171;'; prev.disabled = currentPage === 1;
     prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderRecords(); } });
     pagination.appendChild(prev);
-
     for (let i = 1; i <= totalPages; i++) {
       const btn = document.createElement('button');
-      btn.className = `page-btn${i === currentPage ? ' active' : ''}`;
-      btn.textContent = i;
+      btn.className = `page-btn${i === currentPage ? ' active' : ''}`; btn.textContent = i;
       btn.addEventListener('click', () => { currentPage = i; renderRecords(); });
       pagination.appendChild(btn);
     }
-
     const next = document.createElement('button');
-    next.className = 'page-btn';
-    next.innerHTML = '&#187;';
-    next.disabled  = currentPage === totalPages;
+    next.className = 'page-btn'; next.innerHTML = '&#187;'; next.disabled = currentPage === totalPages;
     next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderRecords(); } });
     pagination.appendChild(next);
   }
 
-  // Reset all sessions to 30
   document.getElementById('resetSessionsBtn').addEventListener('click', () => {
     if (!confirm('Reset all student sessions to 30?')) return;
     const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
@@ -837,28 +796,15 @@ if (recordsTableBody) {
     alert('All sessions have been reset to 30.');
   });
 
-  // Clear all sit-in records
   document.getElementById('clearRecordsBtn').addEventListener('click', () => {
     if (!confirm('Clear ALL sit-in records? This cannot be undone.')) return;
     localStorage.setItem('ccs_sitins', '[]');
     renderRecords();
   });
 
-  // Entries per page
-  document.getElementById('entriesPerPage').addEventListener('change', (e) => {
-    entriesLimit = parseInt(e.target.value);
-    currentPage  = 1;
-    renderRecords();
-  });
+  document.getElementById('entriesPerPage').addEventListener('change', (e) => { entriesLimit = parseInt(e.target.value); currentPage = 1; renderRecords(); });
+  document.getElementById('tableSearchInput').addEventListener('input', (e) => { searchQuery = e.target.value; currentPage = 1; renderRecords(); });
 
-  // Search
-  document.getElementById('tableSearchInput').addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    currentPage = 1;
-    renderRecords();
-  });
-
-  // Logout
   const adminLogout3 = document.getElementById('adminLogoutBtn');
   if (adminLogout3) adminLogout3.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
@@ -873,41 +819,30 @@ if (recordsTableBody) {
 // ======================================
 
 const reportsTableBody = document.getElementById('reportsTableBody');
-
 if (reportsTableBody) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
-  let currentPage  = 1;
-  let entriesLimit = 10;
-  let filterQuery  = '';
-  let dateFilter   = '';
+  let currentPage = 1, entriesLimit = 10, filterQuery = '', dateFilter = '';
 
   function getFiltered() {
     const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
     const users  = JSON.parse(localStorage.getItem('ccs_users')  || '[]');
-
     return sitins.filter(s => {
-      const user     = users.find(u => u.idNumber === s.idNumber);
-      const name     = user ? `${user.firstName} ${user.lastName}`.toLowerCase() : '';
+      const user = users.find(u => u.idNumber === s.idNumber);
+      const name = user ? `${user.firstName} ${user.lastName}`.toLowerCase() : '';
       const matchStr = (name + s.idNumber + (s.purpose||'') + (s.lab||'') + (s.date||'')).toLowerCase();
-      const matchFilter = matchStr.includes(filterQuery.toLowerCase());
-      const matchDate   = dateFilter ? s.date === dateFilter : true;
-      return matchFilter && matchDate;
+      return matchStr.includes(filterQuery.toLowerCase()) && (dateFilter ? s.date === dateFilter : true);
     });
   }
 
   function renderReports() {
     const users    = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const filtered = getFiltered();
-
     const totalPages = Math.max(1, Math.ceil(filtered.length / entriesLimit));
     if (currentPage > totalPages) currentPage = totalPages;
-
     const start = (currentPage - 1) * entriesLimit;
     const shown = filtered.slice(start, start + entriesLimit);
-
     reportsTableBody.innerHTML = '';
-
     if (shown.length === 0) {
       reportsTableBody.innerHTML = `<tr><td colspan="7" class="table-empty">No records found.</td></tr>`;
     } else {
@@ -915,119 +850,57 @@ if (reportsTableBody) {
         const user = users.find(u => u.idNumber === s.idNumber);
         const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
         const tr   = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${s.idNumber}</td>
-          <td>${name}</td>
-          <td>${s.purpose  || '—'}</td>
-          <td>${s.lab      || '—'}</td>
-          <td>${s.timeIn   || '—'}</td>
-          <td>${s.timeOut  || '—'}</td>
-          <td>${s.date     || '—'}</td>`;
+        tr.innerHTML = `<td>${s.idNumber}</td><td>${name}</td><td>${s.purpose||'—'}</td><td>${s.lab||'—'}</td><td>${s.timeIn||'—'}</td><td>${s.timeOut||'—'}</td><td>${s.date||'—'}</td>`;
         reportsTableBody.appendChild(tr);
       });
     }
-
     const from = filtered.length === 0 ? 0 : start + 1;
     const to   = Math.min(start + entriesLimit, filtered.length);
-    document.getElementById('entriesInfo').textContent =
-      filtered.length === 0
-        ? 'Showing 0 entries'
-        : `Showing ${from} to ${to} of ${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'}`;
-
+    document.getElementById('entriesInfo').textContent = filtered.length === 0 ? 'Showing 0 entries' : `Showing ${from} to ${to} of ${filtered.length} entries`;
     buildPagination(totalPages);
   }
 
   function buildPagination(totalPages) {
     const pg = document.getElementById('pagination');
     pg.innerHTML = '';
-
     const mkBtn = (label, page, disabled) => {
       const b = document.createElement('button');
-      b.className   = `page-btn${page === currentPage ? ' active' : ''}`;
-      b.innerHTML   = label;
-      b.disabled    = disabled;
+      b.className = `page-btn${page === currentPage ? ' active' : ''}`; b.innerHTML = label; b.disabled = disabled;
       b.addEventListener('click', () => { if (!disabled) { currentPage = page; renderReports(); } });
       return b;
     };
-
-    pg.appendChild(mkBtn('&#8249;', 1,           currentPage === 1));
+    pg.appendChild(mkBtn('&#8249;', 1, currentPage === 1));
     pg.appendChild(mkBtn('&#171;', Math.max(1, currentPage - 1), currentPage === 1));
     for (let i = 1; i <= totalPages; i++) pg.appendChild(mkBtn(i, i, false));
     pg.appendChild(mkBtn('&#187;', Math.min(totalPages, currentPage + 1), currentPage === totalPages));
-    pg.appendChild(mkBtn('&#8250;', totalPages,  currentPage === totalPages));
+    pg.appendChild(mkBtn('&#8250;', totalPages, currentPage === totalPages));
   }
 
-  // Date search
-  document.getElementById('reportSearchBtn').addEventListener('click', () => {
-    dateFilter  = document.getElementById('reportDateInput').value;
-    currentPage = 1;
-    renderReports();
-  });
+  document.getElementById('reportSearchBtn').addEventListener('click', () => { dateFilter = document.getElementById('reportDateInput').value; currentPage = 1; renderReports(); });
+  document.getElementById('reportResetBtn').addEventListener('click', () => { document.getElementById('reportDateInput').value = ''; document.getElementById('reportFilterInput').value = ''; dateFilter = ''; filterQuery = ''; currentPage = 1; renderReports(); });
+  document.getElementById('reportFilterInput').addEventListener('input', (e) => { filterQuery = e.target.value; currentPage = 1; renderReports(); });
 
-  // Reset
-  document.getElementById('reportResetBtn').addEventListener('click', () => {
-    document.getElementById('reportDateInput').value = '';
-    document.getElementById('reportFilterInput').value = '';
-    dateFilter  = '';
-    filterQuery = '';
-    currentPage = 1;
-    renderReports();
-  });
-
-  // Filter input
-  document.getElementById('reportFilterInput').addEventListener('input', (e) => {
-    filterQuery = e.target.value;
-    currentPage = 1;
-    renderReports();
-  });
-
-  // ── EXPORT CSV ──
   document.getElementById('exportCsvBtn').addEventListener('click', () => {
-    const users    = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const filtered = getFiltered();
     if (filtered.length === 0) { alert('No records to export.'); return; }
-
     let csv = 'ID Number,Name,Purpose,Laboratory,Login,Logout,Date\n';
-    filtered.forEach(s => {
-      const user = users.find(u => u.idNumber === s.idNumber);
-      const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
-      csv += `${s.idNumber},"${name}","${s.purpose||''}","${s.lab||''}","${s.timeIn||''}","${s.timeOut||''}","${s.date||''}"\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = 'sitin-report.csv'; a.click();
-    URL.revokeObjectURL(url);
+    filtered.forEach(s => { const user = users.find(u => u.idNumber === s.idNumber); const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber; csv += `${s.idNumber},"${name}","${s.purpose||''}","${s.lab||''}","${s.timeIn||''}","${s.timeOut||''}","${s.date||''}"\n`; });
+    const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'sitin-report.csv'; a.click(); URL.revokeObjectURL(url);
   });
 
-  // ── EXPORT PDF (print-friendly) ──
-  document.getElementById('exportPdfBtn').addEventListener('click', () => { window.print(); });
-
-  // ── PRINT ──
-  document.getElementById('printBtn').addEventListener('click', () => { window.print(); });
-
-  // ── EXPORT EXCEL (CSV with .xls hint) ──
   document.getElementById('exportExcelBtn').addEventListener('click', () => {
-    const users    = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const filtered = getFiltered();
     if (filtered.length === 0) { alert('No records to export.'); return; }
-
     let csv = 'ID Number\tName\tPurpose\tLaboratory\tLogin\tLogout\tDate\n';
-    filtered.forEach(s => {
-      const user = users.find(u => u.idNumber === s.idNumber);
-      const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber;
-      csv += `${s.idNumber}\t${name}\t${s.purpose||''}\t${s.lab||''}\t${s.timeIn||''}\t${s.timeOut||''}\t${s.date||''}\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'application/vnd.ms-excel' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = 'sitin-report.xls'; a.click();
-    URL.revokeObjectURL(url);
+    filtered.forEach(s => { const user = users.find(u => u.idNumber === s.idNumber); const name = user ? `${user.lastName}, ${user.firstName}` : s.idNumber; csv += `${s.idNumber}\t${name}\t${s.purpose||''}\t${s.lab||''}\t${s.timeIn||''}\t${s.timeOut||''}\t${s.date||''}\n`; });
+    const blob = new Blob([csv], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'sitin-report.xls'; a.click(); URL.revokeObjectURL(url);
   });
 
-  // Logout
+  document.getElementById('exportPdfBtn').addEventListener('click', () => window.print());
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+
   const adminLogout4 = document.getElementById('adminLogoutBtn');
   if (adminLogout4) adminLogout4.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
@@ -1041,87 +914,57 @@ if (reportsTableBody) {
 // ======================================
 
 const feedbackTableBody = document.getElementById('feedbackTableBody');
-
 if (feedbackTableBody) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
-  let currentPage  = 1;
-  let entriesLimit = 10;
-  let filterQuery  = '';
+  let currentPage = 1, entriesLimit = 10, filterQuery = '';
 
-  function getFiltered() {
+  function getFeedbackFiltered() {
     const feedbacks = JSON.parse(localStorage.getItem('ccs_feedbacks') || '[]');
-    return feedbacks.filter(f => {
-      const str = `${f.idNumber} ${f.lab || ''} ${f.date || ''} ${f.message || ''}`.toLowerCase();
-      return str.includes(filterQuery.toLowerCase());
-    });
+    return feedbacks.filter(f => `${f.idNumber} ${f.lab||''} ${f.date||''} ${f.message||''}`.toLowerCase().includes(filterQuery.toLowerCase()));
   }
 
   function renderFeedback() {
-    const filtered   = getFiltered();
+    const filtered   = getFeedbackFiltered();
     const totalPages = Math.max(1, Math.ceil(filtered.length / entriesLimit));
     if (currentPage > totalPages) currentPage = totalPages;
-
     const start = (currentPage - 1) * entriesLimit;
     const shown = filtered.slice(start, start + entriesLimit);
-
     feedbackTableBody.innerHTML = '';
-
     if (shown.length === 0) {
       feedbackTableBody.innerHTML = `<tr><td colspan="4" class="table-empty">No feedback found.</td></tr>`;
     } else {
       shown.forEach(f => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${f.idNumber}</td>
-          <td>${f.lab     || '—'}</td>
-          <td>${f.date    || '—'}</td>
-          <td class="feedback-msg">${f.message || '—'}</td>`;
+        tr.innerHTML = `<td>${f.idNumber}</td><td>${f.lab||'—'}</td><td>${f.date||'—'}</td><td class="feedback-msg">${f.message||'—'}</td>`;
         feedbackTableBody.appendChild(tr);
       });
     }
-
     const from = filtered.length === 0 ? 0 : start + 1;
     const to   = Math.min(start + entriesLimit, filtered.length);
-    document.getElementById('entriesInfo').textContent =
-      filtered.length === 0
-        ? 'Showing 0 entries'
-        : `Showing ${from} to ${to} of ${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'}`;
-
+    document.getElementById('entriesInfo').textContent = filtered.length === 0 ? 'Showing 0 entries' : `Showing ${from} to ${to} of ${filtered.length} entries`;
     buildFeedbackPagination(totalPages);
   }
 
   function buildFeedbackPagination(totalPages) {
     const pg = document.getElementById('pagination');
     pg.innerHTML = '';
-
     const mkBtn = (label, page, disabled) => {
       const b = document.createElement('button');
-      b.className = `page-btn${page === currentPage ? ' active' : ''}`;
-      b.innerHTML = label;
-      b.disabled  = disabled;
+      b.className = `page-btn${page === currentPage ? ' active' : ''}`; b.innerHTML = label; b.disabled = disabled;
       b.addEventListener('click', () => { if (!disabled) { currentPage = page; renderFeedback(); } });
       return b;
     };
-
-    pg.appendChild(mkBtn('&#8249;', 1,           currentPage === 1));
+    pg.appendChild(mkBtn('&#8249;', 1, currentPage === 1));
     pg.appendChild(mkBtn('&#171;', Math.max(1, currentPage - 1), currentPage === 1));
     for (let i = 1; i <= totalPages; i++) pg.appendChild(mkBtn(i, i, false));
     pg.appendChild(mkBtn('&#187;', Math.min(totalPages, currentPage + 1), currentPage === totalPages));
-    pg.appendChild(mkBtn('&#8250;', totalPages,  currentPage === totalPages));
+    pg.appendChild(mkBtn('&#8250;', totalPages, currentPage === totalPages));
   }
 
-  // Filter
-  document.getElementById('feedbackFilterInput').addEventListener('input', (e) => {
-    filterQuery = e.target.value;
-    currentPage = 1;
-    renderFeedback();
-  });
-
-  // Print
+  document.getElementById('feedbackFilterInput').addEventListener('input', (e) => { filterQuery = e.target.value; currentPage = 1; renderFeedback(); });
   document.getElementById('feedbackPrintBtn').addEventListener('click', () => window.print());
 
-  // Logout
   const adminLogout5 = document.getElementById('adminLogoutBtn');
   if (adminLogout5) adminLogout5.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 
@@ -1135,46 +978,33 @@ if (feedbackTableBody) {
 // ======================================
 
 const computerGrid = document.getElementById('computerGrid');
-
 if (computerGrid) {
   if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
 
   const TOTAL_COMPUTERS = 20;
 
   function getComputers(lab) {
-    const key  = `ccs_computers_${lab}`;
-    const data = JSON.parse(localStorage.getItem(key) || 'null');
+    const data = JSON.parse(localStorage.getItem(`ccs_computers_${lab}`) || 'null');
     if (data) return data;
-    // Default: all available
     const defaults = {};
     for (let i = 1; i <= TOTAL_COMPUTERS; i++) defaults[i] = 'available';
     return defaults;
   }
 
-  function saveComputers(lab, data) {
-    localStorage.setItem(`ccs_computers_${lab}`, JSON.stringify(data));
-  }
+  function saveComputers(lab, data) { localStorage.setItem(`ccs_computers_${lab}`, JSON.stringify(data)); }
 
   function renderComputers() {
     const lab       = document.getElementById('labInput').value.trim() || '524';
     const computers = getComputers(lab);
     computerGrid.innerHTML = '';
-
     for (let i = 1; i <= TOTAL_COMPUTERS; i++) {
       const status = computers[i] || 'available';
       const btn    = document.createElement('button');
-      btn.className   = `computer-btn ${status}`;
-      btn.textContent = i;
+      btn.className = `computer-btn ${status}`; btn.textContent = i;
       btn.addEventListener('click', () => {
-        if (status === 'available') {
-          if (!confirm(`Mark Computer ${i} as Used?`)) return;
-          computers[i] = 'used';
-        } else {
-          if (!confirm(`Mark Computer ${i} as Available?`)) return;
-          computers[i] = 'available';
-        }
-        saveComputers(lab, computers);
-        renderComputers();
+        if (status === 'available') { if (!confirm(`Mark Computer ${i} as Used?`)) return; computers[i] = 'used'; }
+        else { if (!confirm(`Mark Computer ${i} as Available?`)) return; computers[i] = 'available'; }
+        saveComputers(lab, computers); renderComputers();
       });
       computerGrid.appendChild(btn);
     }
@@ -1183,61 +1013,37 @@ if (computerGrid) {
   document.getElementById('labFilterBtn').addEventListener('click', renderComputers);
   document.getElementById('labInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') renderComputers(); });
 
-  // ── RESERVATION REQUESTS ──
   function renderRequests() {
     const requests = JSON.parse(localStorage.getItem('ccs_reservations') || '[]');
     const pending  = requests.filter(r => r.status === 'pending');
     const panel    = document.getElementById('reservationRequests');
     panel.innerHTML = '';
-
-    if (pending.length === 0) {
-      panel.innerHTML = '<p class="res-empty">No pending reservation requests.</p>';
-      return;
-    }
-
+    if (pending.length === 0) { panel.innerHTML = '<p class="res-empty">No pending reservation requests.</p>'; return; }
     pending.forEach(r => {
       const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
       const user  = users.find(u => u.idNumber === r.idNumber);
       const name  = user ? `${user.firstName} ${user.lastName}` : r.idNumber;
-
-      const item = document.createElement('div');
+      const item  = document.createElement('div');
       item.className = 'res-request-item';
-      item.innerHTML = `
-        <p><strong>${name}</strong> (${r.idNumber})</p>
-        <p>Lab: ${r.lab} &nbsp;|&nbsp; PC: ${r.computer}</p>
-        <p>Date: ${r.date} &nbsp;|&nbsp; ${r.timeSlot || ''}</p>
-        <div class="res-request-actions">
-          <button class="btn-approve" onclick="handleReservation('${r.resId}', 'approved')">Approve</button>
-          <button class="btn-reject"  onclick="handleReservation('${r.resId}', 'rejected')">Reject</button>
-        </div>`;
+      item.innerHTML = `<p><strong>${name}</strong> (${r.idNumber})</p><p>Lab: ${r.lab} &nbsp;|&nbsp; PC: ${r.computer}</p><p>Date: ${r.date} &nbsp;|&nbsp; ${r.timeSlot||''}</p><div class="res-request-actions"><button class="btn-approve" onclick="handleReservation('${r.resId}', 'approved')">Approve</button><button class="btn-reject" onclick="handleReservation('${r.resId}', 'rejected')">Reject</button></div>`;
       panel.appendChild(item);
     });
   }
 
-  // ── LOGS ──
   function renderLogs() {
     const requests = JSON.parse(localStorage.getItem('ccs_reservations') || '[]');
     const done     = requests.filter(r => r.status !== 'pending');
     const panel    = document.getElementById('reservationLogs');
     panel.innerHTML = '';
-
-    if (done.length === 0) {
-      panel.innerHTML = '<p class="res-empty">No reservation logs yet.</p>';
-      return;
-    }
-
+    if (done.length === 0) { panel.innerHTML = '<p class="res-empty">No reservation logs yet.</p>'; return; }
     [...done].reverse().forEach(r => {
       const users = JSON.parse(localStorage.getItem('ccs_users') || '[]');
       const user  = users.find(u => u.idNumber === r.idNumber);
       const name  = user ? `${user.firstName} ${user.lastName}` : r.idNumber;
       const color = r.status === 'approved' ? '#4caf50' : '#e02020';
-
-      const item = document.createElement('div');
+      const item  = document.createElement('div');
       item.className = 'res-log-item';
-      item.innerHTML = `
-        <strong>${name}</strong> — Lab ${r.lab}, PC ${r.computer}<br/>
-        <span style="color:${color}; font-weight:600; text-transform:capitalize;">${r.status}</span>
-        &nbsp;|&nbsp; ${r.date}`;
+      item.innerHTML = `<strong>${name}</strong> — Lab ${r.lab}, PC ${r.computer}<br/><span style="color:${color};font-weight:600;text-transform:capitalize;">${r.status}</span> &nbsp;|&nbsp; ${r.date}`;
       panel.appendChild(item);
     });
   }
@@ -1247,22 +1053,16 @@ if (computerGrid) {
     const idx      = requests.findIndex(r => r.resId === resId);
     if (idx !== -1) {
       requests[idx].status = action;
-      // If approved, mark computer as used
       if (action === 'approved') {
-        const lab       = requests[idx].lab;
-        const computer  = requests[idx].computer;
-        const computers = getComputers(lab);
-        computers[computer] = 'used';
-        saveComputers(lab, computers);
-        renderComputers();
+        const lab = requests[idx].lab, computer = requests[idx].computer;
+        const computers = getComputers(lab); computers[computer] = 'used';
+        saveComputers(lab, computers); renderComputers();
       }
       localStorage.setItem('ccs_reservations', JSON.stringify(requests));
-      renderRequests();
-      renderLogs();
+      renderRequests(); renderLogs();
     }
   };
 
-  // Logout
   const adminLogout6 = document.getElementById('adminLogoutBtn');
   if (adminLogout6) adminLogout6.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
 

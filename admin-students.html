@@ -64,8 +64,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="studentsTableBody">
-        </tbody>
+        <tbody id="studentsTableBody"></tbody>
       </table>
     </div>
 
@@ -73,7 +72,58 @@
 
   </main>
 
-  <!-- ADD STUDENT MODAL -->
+  <!-- ====== VIEW STUDENT MODAL ====== -->
+  <div class="modal-overlay" id="viewStudentOverlay">
+    <div class="modal-box view-modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Student Information</span>
+        <button class="modal-close-btn" id="closeViewStudentBtn">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="view-student-content">
+          <div class="view-avatar" id="viewAvatar">??</div>
+          <h3 class="view-name" id="viewName">—</h3>
+          <p class="view-id" id="viewIdBadge">—</p>
+          <div class="view-info-grid">
+            <div class="view-info-item">
+              <span class="view-info-label">Course</span>
+              <span class="view-info-value" id="viewCourse">—</span>
+            </div>
+            <div class="view-info-item">
+              <span class="view-info-label">Year Level</span>
+              <span class="view-info-value" id="viewYear">—</span>
+            </div>
+            <div class="view-info-item">
+              <span class="view-info-label">Email</span>
+              <span class="view-info-value" id="viewEmail">—</span>
+            </div>
+            <div class="view-info-item">
+              <span class="view-info-label">Address</span>
+              <span class="view-info-value" id="viewAddress">—</span>
+            </div>
+            <div class="view-info-item">
+              <span class="view-info-label">Middle Name</span>
+              <span class="view-info-value" id="viewMiddle">—</span>
+            </div>
+            <div class="view-info-item">
+              <span class="view-info-label">Username</span>
+              <span class="view-info-value" id="viewUsername">—</span>
+            </div>
+            <div class="view-info-item full">
+              <span class="view-info-label">Remaining Sessions</span>
+              <span class="view-info-value view-sessions" id="viewSessions">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save-btn" onclick="switchToEdit()">Edit Student</button>
+        <button class="modal-cancel-btn" id="cancelViewStudentBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ADD STUDENT MODAL ====== -->
   <div class="modal-overlay" id="addStudentOverlay">
     <div class="modal-box">
       <div class="modal-header">
@@ -139,7 +189,7 @@
     </div>
   </div>
 
-  <!-- EDIT STUDENT MODAL -->
+  <!-- ====== EDIT STUDENT MODAL ====== -->
   <div class="modal-overlay" id="editStudentOverlay">
     <div class="modal-box">
       <div class="modal-header">
@@ -205,7 +255,7 @@
     </div>
   </div>
 
-  <!-- SEARCH MODAL -->
+  <!-- ====== SEARCH MODAL ====== -->
   <div class="search-overlay" id="searchOverlay">
     <div class="search-box">
       <div class="search-box-header">
