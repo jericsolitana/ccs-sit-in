@@ -25,14 +25,12 @@
     </ul>
   </nav>
 
-  <!-- MAIN DASHBOARD -->
+  <!-- MAIN -->
   <main class="admin-main">
 
     <!-- LEFT: Statistics -->
     <div class="admin-card stats-card">
-      <h3 class="admin-card-title">
-        <span>&#128202;</span> Statistics
-      </h3>
+      <h3 class="admin-card-title"><span>&#128202;</span> Statistics</h3>
       <div class="stats-counts">
         <p><strong>Students Registered:</strong> <span id="statRegistered">0</span></p>
         <p><strong>Currently Sit-in:</strong> <span id="statCurrent">0</span></p>
@@ -45,9 +43,7 @@
 
     <!-- RIGHT: Announcements -->
     <div class="admin-card announce-card">
-      <h3 class="admin-card-title">
-        <span>&#128227;</span> Announcement
-      </h3>
+      <h3 class="admin-card-title"><span>&#128227;</span> Announcement</h3>
       <div class="new-announce">
         <label class="announce-label">New Announcement</label>
         <textarea id="newAnnounceText" rows="4" placeholder="Write your announcement here..."></textarea>
@@ -59,18 +55,86 @@
 
   </main>
 
-  <!-- SEARCH MODAL -->
+  <!-- ======================================
+       SEARCH / SIT-IN MODAL
+       ====================================== -->
   <div class="search-overlay" id="searchOverlay">
-    <div class="search-box">
+    <div class="search-box admin-sitin-search-box">
+
+      <!-- HEADER -->
       <div class="search-box-header">
-        <span class="search-box-title">Search Student</span>
+        <span class="search-box-title">&#128269; Find Student</span>
         <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
       </div>
+
+      <!-- SEARCH INPUT -->
       <div class="search-input-wrap">
         <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
-        <button class="search-go-btn" id="searchGoBtn">Search</button>
+        <button class="search-go-btn" id="searchGoBtn">&#128269;</button>
       </div>
-      <div class="search-results" id="searchResults"></div>
+
+      <!-- STATE 1: RESULTS LIST -->
+      <div id="searchResultsPanel">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+
+      <!-- STATE 2: STUDENT SITIN FORM (hidden by default) -->
+      <div id="sitinFormPanel" style="display:none;">
+
+        <!-- Student info card -->
+        <div class="sitin-student-card">
+          <div class="sitin-student-avatar" id="sitinAvatar">??</div>
+          <div class="sitin-student-info">
+            <h4 id="sitinStudentName">—</h4>
+            <div class="sitin-student-meta">
+              <span>ID NUMBER</span>
+              <span id="sitinStudentId">—</span>
+            </div>
+            <div class="sitin-student-meta">
+              <span>REMAINING</span>
+              <span id="sitinStudentSessions" class="sitin-sessions-count">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Purpose + Lab dropdowns -->
+        <div class="sitin-admin-form">
+          <div class="sitin-admin-field">
+            <label>Purpose</label>
+            <select id="adminSitinPurpose">
+              <option value="">Select purpose</option>
+              <option value="C">C</option>
+              <option value="C#">C#</option>
+              <option value="Java">Java</option>
+              <option value="ASP.Net">ASP.Net</option>
+              <option value="PHP">PHP</option>
+              <option value="Python">Python</option>
+              <option value="HTML/CSS">HTML/CSS</option>
+              <option value="JavaScript">JavaScript</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="sitin-admin-field">
+            <label>Lab Room</label>
+            <select id="adminSitinLab">
+              <option value="">Select lab</option>
+              <option value="524">524</option>
+              <option value="526">526</option>
+              <option value="528">528</option>
+              <option value="530">530</option>
+              <option value="542">542</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="sitin-admin-actions">
+          <button class="sitin-admin-cancel-btn" id="sitinBackBtn">Cancel</button>
+          <button class="sitin-admin-confirm-btn" id="sitinConfirmBtn">Confirm Sit-In</button>
+        </div>
+
+      </div>
+
     </div>
   </div>
 

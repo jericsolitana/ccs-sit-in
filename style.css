@@ -134,32 +134,41 @@ main {
 
 .card {
   background: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 12px; /* Smoother corners for a modern look */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Deeper shadow for depth */
   display: flex;
-  align-items: center;
-  gap: 60px;
-  padding: 50px 60px;
+  align-items: stretch; /* Ensures the blend fills the height */
+  overflow: hidden; /* Clips the blend to the card's border radius */
   max-width: 820px;
   width: 100%;
+  padding: 0; /* Remove padding here so the blend can touch the edges */
+  min-height: 450px;
 }
 
+/* The left section containing the logo */
 .logo-section {
-  flex-shrink: 0;
+  /* The blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 40px;
 }
 
 .logo-img {
-  width: 220px;
-  height: 220px;
-  object-fit: contain;
+  width: 100%;
+  max-width: 180px;
+  filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.2));
 }
 
+/* The right section containing the fields */
 .form-section {
-  flex: 1;
-  min-width: 280px;
+  flex: 1.2;
+  padding: 50px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .form-group { margin-bottom: 18px; }
@@ -941,7 +950,7 @@ main {
 .announce-submit-btn {
   margin-top: 10px;
   padding: 8px 22px;
-  background-color: #4caf50;
+  background-color: #8c1aa8;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -951,7 +960,7 @@ main {
   transition: background 0.2s, transform 0.1s;
 }
 
-.announce-submit-btn:hover  { background-color: #3d9e42; }
+.announce-submit-btn:hover  { background-color: #b1ae10; }
 .announce-submit-btn:active { transform: scale(0.98); }
 
 .posted-title { font-size: 16px; font-weight: 700; color: #1a1a2e; padding: 14px 20px 6px; }
@@ -1035,7 +1044,7 @@ main {
 .search-input-wrap input {
   flex: 1;
   padding: 9px 14px;
-  border: 1.5px solid #dde3ef;
+  border: 1.5px solid #941b8433;
   border-radius: 6px;
   font-size: 14px;
   color: #333;
@@ -1054,7 +1063,7 @@ main {
 
 .search-go-btn {
   padding: 9px 18px;
-  background-color: #2b7de9;
+  background-color: #7c179b;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -1064,7 +1073,7 @@ main {
   transition: background 0.2s;
 }
 
-.search-go-btn:hover { background-color: #1e6cd4; }
+.search-go-btn:hover { background-color: #b3b015; }
 
 .search-results {
   display: flex;
@@ -1153,7 +1162,7 @@ main {
 
 .btn-add-student {
   padding: 7px 16px;
-  background-color: #2b7de9;
+  background-color: #8e19a5;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -1166,7 +1175,7 @@ main {
 
 .btn-reset-session {
   padding: 7px 16px;
-  background-color: #e02020;
+  background-color: #c4b320;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -2269,7 +2278,7 @@ main {
   position: absolute;
   top: -6px;
   right: -6px;
-  background: #e02020;
+  background: #d43b3b;
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -2305,7 +2314,7 @@ main {
 .notif-item-date {
   font-size: 11px;
   font-weight: 700;
-  color: #2b7de9 !important;
+  color: #923096 !important;
   margin-bottom: 3px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -2338,3 +2347,165 @@ main {
 }
 
 .notif-mark-read:hover { background: #f0f4ff !important; }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── WIDER SEARCH BOX FOR ADMIN ── */
+.admin-sitin-search-box {
+  max-width: 480px !important;
+}
+
+/* ── STUDENT INFO CARD (after click) ── */
+.sitin-student-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f4f6fb;
+  border-left: 4px solid #2b7de9;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.sitin-student-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e3a6e, #2b7de9);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sitin-student-info { flex: 1; }
+
+.sitin-student-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sitin-student-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #777;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 3px;
+}
+
+.sitin-student-meta span:last-child {
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sitin-sessions-count { color: #2b7de9 !important; }
+
+/* ── PURPOSE + LAB FORM ── */
+.sitin-admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sitin-admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sitin-admin-field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sitin-admin-field select {
+  padding: 9px 12px;
+  border: 1.5px solid #dde3ef;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: #333;
+  background: #f9fafc;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sitin-admin-field select:focus {
+  border-color: #2b7de9;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(43,125,233,0.12);
+}
+
+/* ── ACTION BUTTONS ── */
+.sitin-admin-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.sitin-admin-cancel-btn {
+  padding: 9px 20px;
+  background: #fff;
+  color: #555;
+  border: 1.5px solid #dde3ef;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sitin-admin-cancel-btn:hover { background: #f5f5f5; }
+
+.sitin-admin-confirm-btn {
+  padding: 9px 22px;
+  background: #1e3a6e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sitin-admin-confirm-btn:hover { background: #2b56a8; }
+
+/* ── SEARCH RESULT ITEM — clickable ── */
+.search-result-item {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.search-result-item:hover {
+  background: #eef4ff !important;
+  border-color: #2b7de9 !important;
+}
+
+.search-result-sessions {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4caf50;
+  margin-top: 2px;
+}
+
+.search-result-click-hint {
+  font-size: 11px;
+  color: #4caf50;
+  font-weight: 600;
+  margin-top: 2px;
+}
+

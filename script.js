@@ -61,29 +61,103 @@ function showPopup({ title, message, btnText = 'OK', redirectUrl = null, type = 
 
 // ── SHARED SEARCH MODAL ──
 function initSearchModal() {
-  const searchOverlay = document.getElementById('searchOverlay');
+  const searchOverlay    = document.getElementById('searchOverlay');
   if (!searchOverlay) return;
-  const openSearchBtn  = document.getElementById('openSearchBtn');
-  const closeSearchBtn = document.getElementById('closeSearchBtn');
-  const searchInput    = document.getElementById('searchInput');
-  const searchGoBtn    = document.getElementById('searchGoBtn');
-  const searchResults  = document.getElementById('searchResults');
+  const openSearchBtn    = document.getElementById('openSearchBtn');
+  const closeSearchBtn   = document.getElementById('closeSearchBtn');
+  const searchInput      = document.getElementById('searchInput');
+  const searchGoBtn      = document.getElementById('searchGoBtn');
+  const searchResults    = document.getElementById('searchResults');
+  const searchResultsPanel = document.getElementById('searchResultsPanel');
+  const sitinFormPanel   = document.getElementById('sitinFormPanel');
 
-  openSearchBtn.addEventListener('click', (e) => {
-    e.preventDefault();
+  // Is this the admin page with sit-in form? (admin.html only)
+  const isAdminDashboard = !!sitinFormPanel;
+  let selectedUser = null;
+
+  function showResultsPanel() {
+    if (searchResultsPanel) searchResultsPanel.style.display = 'block';
+    if (sitinFormPanel)     sitinFormPanel.style.display     = 'none';
+  }
+
+  function showSitinPanel(u) {
+    selectedUser = u;
+    if (searchResultsPanel) searchResultsPanel.style.display = 'none';
+    if (sitinFormPanel)     sitinFormPanel.style.display     = 'block';
+
+    // Fill student info
+    const initials = (u.firstName[0] || '') + (u.lastName[0] || '');
+    document.getElementById('sitinAvatar').textContent       = initials.toUpperCase();
+    document.getElementById('sitinStudentName').textContent  = `${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}`;
+    document.getElementById('sitinStudentId').textContent    = u.idNumber;
+    const sessions = u.sessions !== undefined ? u.sessions : 30;
+    document.getElementById('sitinStudentSessions').textContent = `${sessions} / 30`;
+  }
+
+  function openModal() {
     searchOverlay.classList.add('active');
     searchInput.focus();
     searchResults.innerHTML = '';
     searchInput.value = '';
-  });
+    showResultsPanel();
+    if (document.getElementById('adminSitinPurpose')) document.getElementById('adminSitinPurpose').value = '';
+    if (document.getElementById('adminSitinLab'))     document.getElementById('adminSitinLab').value     = '';
+  }
+
+  if (openSearchBtn) openSearchBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
   closeSearchBtn.addEventListener('click', () => searchOverlay.classList.remove('active'));
   searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) searchOverlay.classList.remove('active'); });
   searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); if (e.key === 'Escape') searchOverlay.classList.remove('active'); });
   searchGoBtn.addEventListener('click', doSearch);
 
+  // Back button in sit-in form
+  const sitinBackBtn = document.getElementById('sitinBackBtn');
+  if (sitinBackBtn) sitinBackBtn.addEventListener('click', () => { showResultsPanel(); });
+
+  // Confirm Sit-In button
+  const sitinConfirmBtn = document.getElementById('sitinConfirmBtn');
+  if (sitinConfirmBtn) {
+    sitinConfirmBtn.addEventListener('click', () => {
+      const purpose = document.getElementById('adminSitinPurpose').value;
+      const lab     = document.getElementById('adminSitinLab').value;
+      if (!purpose) { alert('Please select a purpose.'); return; }
+      if (!lab)     { alert('Please select a lab room.'); return; }
+      if (!selectedUser) return;
+
+      const freshUsers = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+      const userIdx    = freshUsers.findIndex(u => u.idNumber === selectedUser.idNumber);
+      if (userIdx === -1) { alert('Student not found.'); return; }
+      if ((freshUsers[userIdx].sessions || 0) <= 0) { alert('This student has no remaining sessions.'); return; }
+
+      const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+      const now    = new Date();
+      sitins.push({
+        sitId:    'SIT-' + Date.now(),
+        idNumber:  selectedUser.idNumber,
+        purpose:   purpose,
+        lab:       lab,
+        session:   freshUsers[userIdx].sessions,
+        status:   'active',
+        timeIn:    now.toLocaleTimeString(),
+        timeOut:   null,
+        date:      getNow(),
+      });
+      localStorage.setItem('ccs_sitins', JSON.stringify(sitins));
+
+      searchOverlay.classList.remove('active');
+      showPopup({
+        title:   'Sit-in Confirmed!',
+        message: `<strong>${selectedUser.firstName} ${selectedUser.lastName}</strong> has been logged in.<br/>Lab: <strong>${lab}</strong> | Purpose: <strong>${purpose}</strong>`,
+        btnText: 'OK',
+        type:    'success',
+      });
+    });
+  }
+
   function doSearch() {
     const query = searchInput.value.trim().toLowerCase();
     searchResults.innerHTML = '';
+    showResultsPanel();
     if (!query) { searchResults.innerHTML = '<p class="search-no-result">Please enter a name or ID number.</p>'; return; }
     const allUsers = JSON.parse(localStorage.getItem('ccs_users') || '[]');
     const found = allUsers.filter(u => {
@@ -94,13 +168,19 @@ function initSearchModal() {
     found.forEach(u => {
       const item = document.createElement('div');
       item.className = 'search-result-item';
+      const sessions = u.sessions !== undefined ? u.sessions : 30;
       item.innerHTML = `
-        <div class="search-result-avatar">${u.idNumber.toString().slice(-2)}</div>
+        <div class="search-result-avatar">${(u.firstName[0]||'')+(u.lastName[0]||'')}</div>
         <div class="search-result-info">
           <p class="search-result-name">${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}</p>
-          <p class="search-result-details">ID: ${u.idNumber} &nbsp;|&nbsp; ${u.course} &nbsp;|&nbsp; Year ${u.yearLevel}</p>
-          <p class="search-result-details">${u.email}</p>
+          <p class="search-result-details">ID: ${u.idNumber} &nbsp;|&nbsp; ${u.course} ${u.yearLevel} year</p>
+          <p class="search-result-sessions">${sessions} sessions</p>
+          ${isAdminDashboard ? '<p class="search-result-click-hint">Click to select</p>' : ''}
         </div>`;
+      // If admin dashboard, clicking opens sit-in form
+      if (isAdminDashboard) {
+        item.addEventListener('click', () => showSitinPanel(u));
+      }
       searchResults.appendChild(item);
     });
   }
@@ -263,7 +343,7 @@ if (studentAvatar) {
         const isNew = a.id > lastRead;
         li.innerHTML = `
           <a class="notif-item${isNew ? ' notif-unread' : ''}">
-            <p class="notif-item-date">CCS Admin | ${a.date}${isNew ? ' 🔵' : ''}</p>
+            <p class="notif-item-date">CCS Admin | ${a.date}${isNew ? ' 🔴' : ''}</p>
             <p class="notif-item-text">${a.text}</p>
           </a>`;
         menu.appendChild(li);
@@ -487,8 +567,6 @@ if (sitinChartEl) {
   renderAnnouncements();
   initSearchModal();
 }
-
-
 
 
 // ======================================
@@ -729,8 +807,6 @@ if (sitinTableBody) {
 }
 
 
-
-
 // ======================================
 //  VIEW SIT-IN RECORDS (admin-records.html)
 // ======================================
@@ -833,3 +909,4 @@ if (computerGrid) {
   const adminLogout6=document.getElementById('adminLogoutBtn');if(adminLogout6)adminLogout6.addEventListener('click',(e)=>{e.preventDefault();localStorage.removeItem('ccs_admin');window.location.href='index.html';});
   initSearchModal(); renderComputers(); renderRequests(); renderLogs();
 }
+
