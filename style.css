@@ -815,19 +815,28 @@ main {
 .ep-save-btn {
   flex: 1;
   padding: 11px;
-  background-color: #1e3a6e;
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(90deg, #7126c2 0%, #c5a019 100%);
   color: #ffffff;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  /* Added a shadow to make the button "pop" on the profile page */
+  box-shadow: 0 4px 10px rgba(113, 38, 194, 0.2);
+  transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-.ep-save-btn:hover  { background-color: #2b56a8; }
-.ep-save-btn:active { transform: scale(0.99); }
+.ep-save-btn:hover {
+  /* Brightens the gradient slightly on hover */
+  filter: brightness(1.1);
+  box-shadow: 0 6px 15px rgba(113, 38, 194, 0.3);
+}
 
+.ep-save-btn:active {
+  transform: scale(0.98);
+} 
 .ep-cancel-btn {
   padding: 11px 24px;
   background-color: #ffffff;
@@ -1701,7 +1710,7 @@ main {
 
 .btn-reset-sessions {
   padding: 7px 16px;
-  background-color: #2b7de9;
+  background-color: #9829b9;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -1714,7 +1723,7 @@ main {
 
 .btn-clear-records {
   padding: 7px 16px;
-  background-color: #e02020;
+  background-color: #bdba1d;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -1774,7 +1783,7 @@ main {
 
 .btn-report-search {
   padding: 6px 16px;
-  background-color: #2b7de9;
+  background-color: #b321b8;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -1787,7 +1796,7 @@ main {
 
 .btn-report-reset {
   padding: 6px 16px;
-  background-color: #e02020;
+  background-color: #bba424;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -1933,13 +1942,20 @@ main {
 }
 
 .res-panel-header {
-  background-color: #1e3a6e;
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
   color: #ffffff;
   font-size: 13.5px;
-  font-weight: 600;
-  padding: 10px 16px;
+  font-weight: 700; /* Increased weight for better readability on gradient */
+  padding: 12px 16px; /* Slightly more padding for a modern feel */
   text-align: center;
-}
+  
+  /* Adds a smooth transition if you're swapping panels */
+  transition: background 0.3s ease;
+  
+  /* Ensures text stands out against the vibrant background */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+} 
 
 .res-panel-body {
   padding: 14px 16px;
@@ -2509,3 +2525,115 @@ main {
   margin-top: 2px;
 }
 
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── HISTORY PAGE ── */
+.history-main {
+  flex: 1;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.history-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  padding: 24px 28px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.history-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Increased gap slightly for better icon spacing */
+  
+  /* Adds depth to the header card */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Ensures the title pops against the vibrant background */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ── FEEDBACK BUTTON ── */
+.btn-feedback {
+  padding: 5px 14px;
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-feedback:hover { background-color: #3d9e42; }
+
+/* ── FEEDBACK MODAL ── */
+.feedback-modal-box  { max-width: 420px; }
+
+.feedback-modal-header {
+  background-color: #1e3a6e;
+  color: #ffffff;
+}
+
+.feedback-modal-header .modal-title { color: #ffffff; }
+.feedback-modal-header .modal-close-btn { color: #ffffff; }
+.feedback-modal-header .modal-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+.feedback-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.feedback-disabled-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #dde3ef;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.feedback-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #dde3ef;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: #333;
+  background: #f9fafc;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.feedback-textarea:focus {
+  border-color: #2b7de9;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(43,125,233,0.12);
+}
+
+.feedback-submit-btn { background-color: #4caf50 !important; }
+.feedback-submit-btn:hover { background-color: #3d9e42 !important; }

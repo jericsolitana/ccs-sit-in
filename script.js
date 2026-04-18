@@ -61,37 +61,100 @@ function showPopup({ title, message, btnText = 'OK', redirectUrl = null, type = 
 
 // ── SHARED SEARCH MODAL ──
 function initSearchModal() {
-  const searchOverlay    = document.getElementById('searchOverlay');
+  const searchOverlay = document.getElementById('searchOverlay');
   if (!searchOverlay) return;
-  const openSearchBtn    = document.getElementById('openSearchBtn');
-  const closeSearchBtn   = document.getElementById('closeSearchBtn');
-  const searchInput      = document.getElementById('searchInput');
-  const searchGoBtn      = document.getElementById('searchGoBtn');
-  const searchResults    = document.getElementById('searchResults');
-  const searchResultsPanel = document.getElementById('searchResultsPanel');
-  const sitinFormPanel   = document.getElementById('sitinFormPanel');
 
-  // Is this the admin page with sit-in form? (admin.html only)
-  const isAdminDashboard = !!sitinFormPanel;
+  const openSearchBtn  = document.getElementById('openSearchBtn');
+  const closeSearchBtn = document.getElementById('closeSearchBtn');
+  const searchInput    = document.getElementById('searchInput');
+  const searchGoBtn    = document.getElementById('searchGoBtn');
+  const searchResults  = document.getElementById('searchResults');
+
+  // ── Dynamically inject sit-in panels if not already in HTML ──
+  if (!document.getElementById('searchResultsPanel')) {
+    // Wrap existing searchResults in a panel div
+    const resultsPanel = document.createElement('div');
+    resultsPanel.id = 'searchResultsPanel';
+    searchResults.parentNode.insertBefore(resultsPanel, searchResults);
+    resultsPanel.appendChild(searchResults);
+  }
+
+  if (!document.getElementById('sitinFormPanel')) {
+    const formPanel = document.createElement('div');
+    formPanel.id    = 'sitinFormPanel';
+    formPanel.style.display = 'none';
+    formPanel.innerHTML = `
+      <div class="sitin-student-card">
+        <div class="sitin-student-avatar" id="sitinAvatar">??</div>
+        <div class="sitin-student-info">
+          <h4 id="sitinStudentName">—</h4>
+          <div class="sitin-student-meta">
+            <span>ID NUMBER</span>
+            <span id="sitinStudentId">—</span>
+          </div>
+          <div class="sitin-student-meta">
+            <span>REMAINING</span>
+            <span id="sitinStudentSessions" class="sitin-sessions-count">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="sitin-admin-form">
+        <div class="sitin-admin-field">
+          <label>Purpose</label>
+          <select id="adminSitinPurpose">
+            <option value="">Select purpose</option>
+            <option value="C">C</option>
+            <option value="C#">C#</option>
+            <option value="Java">Java</option>
+            <option value="ASP.Net">ASP.Net</option>
+            <option value="PHP">PHP</option>
+            <option value="Python">Python</option>
+            <option value="HTML/CSS">HTML/CSS</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="sitin-admin-field">
+          <label>Lab Room</label>
+          <select id="adminSitinLab">
+            <option value="">Select lab</option>
+            <option value="524">524</option>
+            <option value="526">526</option>
+            <option value="528">528</option>
+            <option value="530">530</option>
+            <option value="542">542</option>
+          </select>
+        </div>
+      </div>
+      <div class="sitin-admin-actions">
+        <button class="sitin-admin-cancel-btn" id="sitinBackBtn">Cancel</button>
+        <button class="sitin-admin-confirm-btn" id="sitinConfirmBtn">Confirm Sit-In</button>
+      </div>`;
+    // Append after resultsPanel inside search-box
+    document.getElementById('searchResultsPanel').parentNode.appendChild(formPanel);
+  }
+
+  const searchResultsPanel = document.getElementById('searchResultsPanel');
+  const sitinFormPanel     = document.getElementById('sitinFormPanel');
   let selectedUser = null;
 
   function showResultsPanel() {
-    if (searchResultsPanel) searchResultsPanel.style.display = 'block';
-    if (sitinFormPanel)     sitinFormPanel.style.display     = 'none';
+    searchResultsPanel.style.display = 'block';
+    sitinFormPanel.style.display     = 'none';
   }
 
   function showSitinPanel(u) {
     selectedUser = u;
-    if (searchResultsPanel) searchResultsPanel.style.display = 'none';
-    if (sitinFormPanel)     sitinFormPanel.style.display     = 'block';
-
-    // Fill student info
+    searchResultsPanel.style.display = 'none';
+    sitinFormPanel.style.display     = 'block';
     const initials = (u.firstName[0] || '') + (u.lastName[0] || '');
-    document.getElementById('sitinAvatar').textContent       = initials.toUpperCase();
-    document.getElementById('sitinStudentName').textContent  = `${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}`;
-    document.getElementById('sitinStudentId').textContent    = u.idNumber;
+    document.getElementById('sitinAvatar').textContent      = initials.toUpperCase();
+    document.getElementById('sitinStudentName').textContent = `${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}`;
+    document.getElementById('sitinStudentId').textContent   = u.idNumber;
     const sessions = u.sessions !== undefined ? u.sessions : 30;
     document.getElementById('sitinStudentSessions').textContent = `${sessions} / 30`;
+    document.getElementById('adminSitinPurpose').value = '';
+    document.getElementById('adminSitinLab').value     = '';
   }
 
   function openModal() {
@@ -100,8 +163,6 @@ function initSearchModal() {
     searchResults.innerHTML = '';
     searchInput.value = '';
     showResultsPanel();
-    if (document.getElementById('adminSitinPurpose')) document.getElementById('adminSitinPurpose').value = '';
-    if (document.getElementById('adminSitinLab'))     document.getElementById('adminSitinLab').value     = '';
   }
 
   if (openSearchBtn) openSearchBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -110,49 +171,45 @@ function initSearchModal() {
   searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); if (e.key === 'Escape') searchOverlay.classList.remove('active'); });
   searchGoBtn.addEventListener('click', doSearch);
 
-  // Back button in sit-in form
-  const sitinBackBtn = document.getElementById('sitinBackBtn');
-  if (sitinBackBtn) sitinBackBtn.addEventListener('click', () => { showResultsPanel(); });
+  // Back button
+  document.getElementById('sitinBackBtn').addEventListener('click', () => showResultsPanel());
 
-  // Confirm Sit-In button
-  const sitinConfirmBtn = document.getElementById('sitinConfirmBtn');
-  if (sitinConfirmBtn) {
-    sitinConfirmBtn.addEventListener('click', () => {
-      const purpose = document.getElementById('adminSitinPurpose').value;
-      const lab     = document.getElementById('adminSitinLab').value;
-      if (!purpose) { alert('Please select a purpose.'); return; }
-      if (!lab)     { alert('Please select a lab room.'); return; }
-      if (!selectedUser) return;
+  // Confirm Sit-In
+  document.getElementById('sitinConfirmBtn').addEventListener('click', () => {
+    const purpose = document.getElementById('adminSitinPurpose').value;
+    const lab     = document.getElementById('adminSitinLab').value;
+    if (!purpose) { alert('Please select a purpose.'); return; }
+    if (!lab)     { alert('Please select a lab room.'); return; }
+    if (!selectedUser) return;
 
-      const freshUsers = JSON.parse(localStorage.getItem('ccs_users') || '[]');
-      const userIdx    = freshUsers.findIndex(u => u.idNumber === selectedUser.idNumber);
-      if (userIdx === -1) { alert('Student not found.'); return; }
-      if ((freshUsers[userIdx].sessions || 0) <= 0) { alert('This student has no remaining sessions.'); return; }
+    const users   = JSON.parse(localStorage.getItem('ccs_users') || '[]');
+    const userIdx = users.findIndex(u => u.idNumber === selectedUser.idNumber);
+    if (userIdx === -1) { alert('Student not found.'); return; }
+    if ((users[userIdx].sessions || 0) <= 0) { alert('This student has no remaining sessions.'); return; }
 
-      const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
-      const now    = new Date();
-      sitins.push({
-        sitId:    'SIT-' + Date.now(),
-        idNumber:  selectedUser.idNumber,
-        purpose:   purpose,
-        lab:       lab,
-        session:   freshUsers[userIdx].sessions,
-        status:   'active',
-        timeIn:    now.toLocaleTimeString(),
-        timeOut:   null,
-        date:      getNow(),
-      });
-      localStorage.setItem('ccs_sitins', JSON.stringify(sitins));
-
-      searchOverlay.classList.remove('active');
-      showPopup({
-        title:   'Sit-in Confirmed!',
-        message: `<strong>${selectedUser.firstName} ${selectedUser.lastName}</strong> has been logged in.<br/>Lab: <strong>${lab}</strong> | Purpose: <strong>${purpose}</strong>`,
-        btnText: 'OK',
-        type:    'success',
-      });
+    const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+    const now    = new Date();
+    sitins.push({
+      sitId:    'SIT-' + Date.now(),
+      idNumber:  selectedUser.idNumber,
+      purpose:   purpose,
+      lab:       lab,
+      session:   users[userIdx].sessions,
+      status:   'active',
+      timeIn:    now.toLocaleTimeString(),
+      timeOut:   null,
+      date:      getNow(),
     });
-  }
+    localStorage.setItem('ccs_sitins', JSON.stringify(sitins));
+
+    searchOverlay.classList.remove('active');
+    showPopup({
+      title:   'Sit-in Confirmed!',
+      message: `<strong>${selectedUser.firstName} ${selectedUser.lastName}</strong> has been logged in.<br/>Lab: <strong>${lab}</strong> | Purpose: <strong>${purpose}</strong>`,
+      btnText: 'OK',
+      type:    'success',
+    });
+  });
 
   function doSearch() {
     const query = searchInput.value.trim().toLowerCase();
@@ -175,16 +232,14 @@ function initSearchModal() {
           <p class="search-result-name">${u.firstName} ${u.middleName ? u.middleName + ' ' : ''}${u.lastName}</p>
           <p class="search-result-details">ID: ${u.idNumber} &nbsp;|&nbsp; ${u.course} ${u.yearLevel} year</p>
           <p class="search-result-sessions">${sessions} sessions</p>
-          ${isAdminDashboard ? '<p class="search-result-click-hint">Click to select</p>' : ''}
+          <p class="search-result-click-hint">Click to select</p>
         </div>`;
-      // If admin dashboard, clicking opens sit-in form
-      if (isAdminDashboard) {
-        item.addEventListener('click', () => showSitinPanel(u));
-      }
+      item.addEventListener('click', () => showSitinPanel(u));
       searchResults.appendChild(item);
     });
   }
 }
+
 
 
 // ======================================
@@ -343,7 +398,7 @@ if (studentAvatar) {
         const isNew = a.id > lastRead;
         li.innerHTML = `
           <a class="notif-item${isNew ? ' notif-unread' : ''}">
-            <p class="notif-item-date">CCS Admin | ${a.date}${isNew ? ' 🔴' : ''}</p>
+            <p class="notif-item-date">CCS Admin | ${a.date}${isNew ? ' 🔵' : ''}</p>
             <p class="notif-item-text">${a.text}</p>
           </a>`;
         menu.appendChild(li);
@@ -910,3 +965,187 @@ if (computerGrid) {
   initSearchModal(); renderComputers(); renderRequests(); renderLogs();
 }
 
+
+// ======================================
+//  STUDENT HISTORY (history.html)
+// ======================================
+
+const historyTableBody = document.getElementById('historyTableBody');
+if (historyTableBody) {
+  const currentUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+  if (!currentUser) { window.location.href = 'index.html'; }
+
+  let entriesLimit = 10;
+  let searchQuery  = '';
+  let currentPage  = 1;
+  let feedbackSitId = null;
+  let feedbackLab   = null;
+
+  // ── LOAD NOTIFICATIONS ──
+  function loadNotifications() {
+    const announcements = JSON.parse(localStorage.getItem('ccs_announcements') || '[]');
+    const readKey       = `ccs_notif_read_${currentUser.idNumber}`;
+    const lastRead      = parseInt(localStorage.getItem(readKey) || '0');
+    const unread        = announcements.filter(a => a.id > lastRead);
+    const badge         = document.getElementById('notifBadge');
+    const menu          = document.getElementById('notifMenu');
+    if (badge) {
+      if (unread.length > 0) { badge.textContent = unread.length > 9 ? '9+' : unread.length; badge.style.display = 'flex'; }
+      else badge.style.display = 'none';
+    }
+    if (menu) {
+      menu.innerHTML = '';
+      if (!announcements.length) { menu.innerHTML = '<li><a class="notif-empty">No announcements yet</a></li>'; return; }
+      [...announcements].reverse().forEach(a => {
+        const li = document.createElement('li');
+        const isNew = a.id > lastRead;
+        li.innerHTML = `<a class="notif-item"><p class="notif-item-date">CCS Admin | ${a.date}${isNew ? ' 🔵' : ''}</p><p class="notif-item-text">${a.text}</p></a>`;
+        menu.appendChild(li);
+      });
+      if (unread.length > 0) {
+        const markLi = document.createElement('li');
+        markLi.innerHTML = `<a class="notif-mark-read" id="markReadBtn">Mark all as read</a>`;
+        menu.appendChild(markLi);
+        document.getElementById('markReadBtn').addEventListener('click', (e) => {
+          e.preventDefault();
+          const latest = Math.max(...announcements.map(a => a.id || 0));
+          localStorage.setItem(readKey, latest);
+          loadNotifications();
+        });
+      }
+    }
+  }
+
+  loadNotifications();
+
+  // Logout
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('ccs_current_user');
+    window.location.href = 'index.html';
+  });
+
+  // ── RENDER HISTORY TABLE ──
+  function renderHistory() {
+    const allSitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+    // Only show this student's sit-ins
+    const mySitins  = allSitins.filter(s => s.idNumber === currentUser.idNumber);
+
+    const filtered = mySitins.filter(s => {
+      const str = `${s.purpose || ''} ${s.lab || ''} ${s.date || ''}`.toLowerCase();
+      return str.includes(searchQuery.toLowerCase());
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / entriesLimit));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * entriesLimit;
+    const shown = filtered.slice(start, start + entriesLimit);
+
+    historyTableBody.innerHTML = '';
+
+    if (shown.length === 0) {
+      historyTableBody.innerHTML = `<tr><td colspan="8" class="table-empty">No sit-in history found.</td></tr>`;
+    } else {
+      shown.forEach(s => {
+        const tr = document.createElement('tr');
+        // Show Feedback button only for done sessions
+        const actionBtn = s.status === 'done'
+          ? `<button class="btn-feedback" onclick="openFeedback('${s.sitId}', '${s.lab || ''}')">Feedback</button>`
+          : `<span style="font-size:12px;color:#aaa;">Active</span>`;
+
+        tr.innerHTML = `
+          <td>${s.idNumber}</td>
+          <td>${currentUser.firstName} ${currentUser.lastName}</td>
+          <td>${s.purpose || '—'}</td>
+          <td>${s.lab     || '—'}</td>
+          <td>${s.timeIn  || '—'}</td>
+          <td>${s.timeOut || '—'}</td>
+          <td>${s.date    || '—'}</td>
+          <td>${actionBtn}</td>`;
+        historyTableBody.appendChild(tr);
+      });
+    }
+
+    const from = filtered.length === 0 ? 0 : start + 1;
+    const to   = Math.min(start + entriesLimit, filtered.length);
+    document.getElementById('entriesInfo').textContent =
+      filtered.length === 0
+        ? 'Showing 0 entries'
+        : `Showing ${from} to ${to} of ${filtered.length} entries`;
+
+    buildHistoryPagination(totalPages);
+  }
+
+  function buildHistoryPagination(totalPages) {
+    const pg = document.getElementById('pagination');
+    pg.innerHTML = '';
+
+    const prev = document.createElement('button');
+    prev.className = 'page-btn'; prev.innerHTML = '&#171;'; prev.disabled = currentPage === 1;
+    prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderHistory(); } });
+    pg.appendChild(prev);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.className = `page-btn${i === currentPage ? ' active' : ''}`;
+      btn.textContent = i;
+      btn.addEventListener('click', () => { currentPage = i; renderHistory(); });
+      pg.appendChild(btn);
+    }
+
+    const next = document.createElement('button');
+    next.className = 'page-btn'; next.innerHTML = '&#187;'; next.disabled = currentPage === totalPages;
+    next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderHistory(); } });
+    pg.appendChild(next);
+  }
+
+  document.getElementById('entriesPerPage').addEventListener('change', (e) => {
+    entriesLimit = parseInt(e.target.value); currentPage = 1; renderHistory();
+  });
+  document.getElementById('tableSearchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value; currentPage = 1; renderHistory();
+  });
+
+  renderHistory();
+
+  // ── FEEDBACK MODAL ──
+  const feedbackOverlay = document.getElementById('feedbackOverlay');
+
+  window.openFeedback = function(sitId, lab) {
+    feedbackSitId = sitId;
+    feedbackLab   = lab;
+    document.getElementById('feedbackLab').value     = lab || '—';
+    document.getElementById('feedbackMessage').value = '';
+    feedbackOverlay.classList.add('active');
+  };
+
+  document.getElementById('closeFeedbackBtn').addEventListener('click',  () => feedbackOverlay.classList.remove('active'));
+  document.getElementById('cancelFeedbackBtn').addEventListener('click', () => feedbackOverlay.classList.remove('active'));
+  feedbackOverlay.addEventListener('click', (e) => { if (e.target === feedbackOverlay) feedbackOverlay.classList.remove('active'); });
+
+  document.getElementById('submitFeedbackBtn').addEventListener('click', () => {
+    const message = document.getElementById('feedbackMessage').value.trim();
+    if (!message) { alert('Please write your feedback message.'); return; }
+
+    const feedbacks = JSON.parse(localStorage.getItem('ccs_feedbacks') || '[]');
+    feedbacks.push({
+      id:       Date.now(),
+      idNumber: currentUser.idNumber,
+      sitId:    feedbackSitId,
+      lab:      feedbackLab,
+      message:  message,
+      date:     getNow(),
+    });
+    localStorage.setItem('ccs_feedbacks', JSON.stringify(feedbacks));
+
+    feedbackOverlay.classList.remove('active');
+    showPopup({
+      title:   'Feedback Sent!',
+      message: 'Your feedback has been submitted to the admin.',
+      btnText: 'OK',
+      type:    'success',
+    });
+  });
+}

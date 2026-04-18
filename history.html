@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>History — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">Student History</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+
+      <!-- NOTIFICATION -->
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle notif-toggle">
+          Notifications
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </a>
+        <ul class="dropdown-menu notif-menu" id="notifMenu"></ul>
+      </li>
+
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html" style="background:rgba(255,255,255,0.2);color:#fff;font-weight:600;">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="#" id="logoutBtn" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="history-main">
+    <div class="history-card">
+
+      <h2 class="history-title">&#128194; History</h2>
+
+      <!-- CONTROLS -->
+      <div class="students-controls">
+        <div class="students-controls-left">
+          <div class="entries-label">
+            Show
+            <select id="entriesPerPage">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            entries per page
+          </div>
+        </div>
+        <div class="students-controls-right">
+          <div class="table-search-wrap">
+            <label>Search:</label>
+            <input type="text" id="tableSearchInput" />
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="students-table-wrap">
+        <table class="students-table">
+          <thead>
+            <tr>
+              <th>ID Number <span class="sort-icon">⇅</span></th>
+              <th>Name <span class="sort-icon">⇅</span></th>
+              <th>Sit Purpose <span class="sort-icon">⇅</span></th>
+              <th>Laboratory <span class="sort-icon">⇅</span></th>
+              <th>Login <span class="sort-icon">⇅</span></th>
+              <th>Logout <span class="sort-icon">⇅</span></th>
+              <th>Date <span class="sort-icon">⇅</span></th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="sitin-footer">
+        <p class="entries-info" id="entriesInfo">Showing 0 entries</p>
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FEEDBACK MODAL -->
+  <div class="modal-overlay" id="feedbackOverlay">
+    <div class="modal-box feedback-modal-box">
+      <div class="modal-header feedback-modal-header">
+        <span class="modal-title">&#128172; Send Feedback</span>
+        <button class="modal-close-btn" id="closeFeedbackBtn">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-group full" style="margin-bottom:14px;">
+          <label class="feedback-label">Laboratory</label>
+          <input type="text" id="feedbackLab" disabled class="feedback-disabled-input" />
+        </div>
+        <div class="modal-group full">
+          <label class="feedback-label">Message <span style="color:#e02020;">*</span></label>
+          <textarea id="feedbackMessage" rows="5"
+            placeholder="Write your feedback here..."
+            class="feedback-textarea"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save-btn feedback-submit-btn" id="submitFeedbackBtn">Send Feedback</button>
+        <button class="modal-cancel-btn" id="cancelFeedbackBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
