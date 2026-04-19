@@ -601,10 +601,24 @@ if (sitinChartEl) {
     [...announcements].reverse().forEach(a => {
       const item = document.createElement('div');
       item.className = 'posted-item';
-      item.innerHTML = `<p class="posted-author">CCS Admin | ${a.date}</p>${a.text ? `<p class="posted-body">${a.text}</p>` : ''}`;
+      item.innerHTML = `
+        <div class="posted-item-header">
+          <p class="posted-author">CCS Admin | ${a.date}</p>
+          <button class="btn-delete-announce" title="Delete" onclick="deleteAnnouncement(${a.id})">&#128465;</button>
+        </div>
+        ${a.text ? `<p class="posted-body">${a.text}</p>` : ''}`;
       list.appendChild(item);
     });
   }
+
+  window.deleteAnnouncement = function(id) {
+    if (!confirm('Delete this announcement?')) return;
+    let announcements = JSON.parse(localStorage.getItem('ccs_announcements') || '[]');
+    announcements = announcements.filter(a => a.id !== id);
+    localStorage.setItem('ccs_announcements', JSON.stringify(announcements));
+    renderAnnouncements();
+  };
+
 
   document.getElementById('announceSubmitBtn').addEventListener('click', () => {
     const textarea = document.getElementById('newAnnounceText');

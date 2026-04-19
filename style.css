@@ -109,7 +109,7 @@ nav {
 .btn-logout:hover { background-color: #c01010 !important; }
 
 .btn-logout-yellow {
-  background-color: #f0a500 !important;
+  background-color: #e0495d !important;
   color: #1a1a2e !important;
   border-radius: 4px !important;
   padding: 5px 14px !important;
@@ -877,7 +877,7 @@ main {
 .admin-nav .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; flex-wrap: nowrap; }
 
 .admin-nav .nav-links a {
-  color: #cdd8ec;
+  color: #eccdcd;
   text-decoration: none;
   font-size: 13px;
   padding: 5px 8px;
@@ -2637,3 +2637,32 @@ main {
 
 .feedback-submit-btn { background-color: #4caf50 !important; }
 .feedback-submit-btn:hover { background-color: #3d9e42 !important; }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+.posted-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.btn-delete-announce {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #ccc;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-delete-announce:hover {
+  color: #e02020;
+  background: #fdf0f0;
+}
