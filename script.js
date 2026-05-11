@@ -1163,3 +1163,238 @@ if (historyTableBody) {
     });
   });
 }
+
+
+// ======================================
+//  LEADERBOARD (leaderboard.html)
+// ======================================
+
+const leaderboardTableBody = document.getElementById('leaderboardTableBody');
+if (leaderboardTableBody) {
+  const currentUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+  if (!currentUser) { window.location.href = 'index.html'; }
+
+  // ── NOTIFICATIONS ──
+  function loadNotifLeaderboard() {
+    const announcements = JSON.parse(localStorage.getItem('ccs_announcements') || '[]');
+    const readKey  = `ccs_notif_read_${currentUser.idNumber}`;
+    const lastRead = parseInt(localStorage.getItem(readKey) || '0');
+    const unread   = announcements.filter(a => a.id > lastRead);
+    const badge    = document.getElementById('notifBadge');
+    const menu     = document.getElementById('notifMenu');
+    if (badge) { badge.textContent = unread.length > 9 ? '9+' : unread.length; badge.style.display = unread.length > 0 ? 'flex' : 'none'; }
+    if (menu) {
+      menu.innerHTML = '';
+      if (!announcements.length) { menu.innerHTML = '<li><a class="notif-empty">No announcements yet</a></li>'; return; }
+      [...announcements].reverse().forEach(a => {
+        const li = document.createElement('li');
+        const isNew = a.id > lastRead;
+        li.innerHTML = `<a class="notif-item"><p class="notif-item-date">CCS Admin | ${a.date}${isNew?' 🔵':''}</p><p class="notif-item-text">${a.text}</p></a>`;
+        menu.appendChild(li);
+      });
+      if (unread.length > 0) {
+        const markLi = document.createElement('li');
+        markLi.innerHTML = `<a class="notif-mark-read" id="markReadBtn">Mark all as read</a>`;
+        menu.appendChild(markLi);
+        document.getElementById('markReadBtn').addEventListener('click', (e) => {
+          e.preventDefault();
+          const latest = Math.max(...announcements.map(a => a.id || 0));
+          localStorage.setItem(readKey, latest);
+          loadNotifLeaderboard();
+        });
+      }
+    }
+  }
+
+  loadNotifLeaderboard();
+
+  // Logout
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_current_user'); window.location.href = 'index.html'; });
+
+  // ── BUILD LEADERBOARD ──
+  const users  = JSON.parse(localStorage.getItem('ccs_users')  || '[]');
+  const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+
+  // Calculate sit-in count and points per student (1 point per completed sit-in)
+  const studentStats = users.map(u => {
+    const mySitins   = sitins.filter(s => s.idNumber === u.idNumber && s.status === 'done');
+    const sitinCount = mySitins.length;
+    const points     = sitinCount; // 1 point per sit-in
+    return { ...u, sitinCount, points };
+  });
+
+  // Sort by points descending
+  studentStats.sort((a, b) => b.points - a.points);
+
+  // Render table
+  leaderboardTableBody.innerHTML = '';
+
+  if (studentStats.length === 0) {
+    leaderboardTableBody.innerHTML = `<tr><td colspan="5" class="lb-empty">No students registered yet.</td></tr>`;
+  } else {
+    studentStats.forEach((u, idx) => {
+      const rank    = idx + 1;
+      const isMe    = u.idNumber === currentUser.idNumber;
+      const tr      = document.createElement('tr');
+      if (isMe) tr.className = 'lb-my-row';
+
+      // Medal
+      let medalClass = 'normal';
+      let medalContent = rank;
+      if (rank === 1) { medalClass = 'gold';   medalContent = '🥇'; }
+      if (rank === 2) { medalClass = 'silver';  medalContent = '🥈'; }
+      if (rank === 3) { medalClass = 'bronze';  medalContent = '🥉'; }
+
+      const youBadge = isMe ? '<span class="lb-you-badge">You</span>' : '';
+
+      tr.innerHTML = `
+        <td><div class="lb-rank-medal ${medalClass}">${medalContent}</div></td>
+        <td>${u.firstName} ${u.lastName}${youBadge}</td>
+        <td>${u.course}</td>
+        <td>${u.sitinCount}</td>
+        <td><span class="lb-points-badge">${u.points}</span></td>`;
+      leaderboardTableBody.appendChild(tr);
+    });
+  }
+
+  // ── YOUR RANKING ──
+  const myStats = studentStats.find(u => u.idNumber === currentUser.idNumber);
+  const myRank  = myStats ? studentStats.indexOf(myStats) + 1 : '—';
+
+  document.getElementById('lbRankNumber').textContent    = myRank ? `#${myRank}` : '#—';
+  document.getElementById('lbPoints').textContent        = myStats ? myStats.points     : 0;
+  document.getElementById('lbSitins').textContent        = myStats ? myStats.sitinCount : 0;
+  document.getElementById('lbTotalStudents').textContent = users.length;
+}
+
+
+// ======================================
+//  MY SUMMARY (mysummary.html)
+// ======================================
+
+const summaryMain = document.querySelector('.summary-main');
+if (summaryMain) {
+  const currentUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+  if (!currentUser) { window.location.href = 'index.html'; }
+
+  // Notifications
+  function loadNotifSummary() {
+    const announcements = JSON.parse(localStorage.getItem('ccs_announcements') || '[]');
+    const readKey  = `ccs_notif_read_${currentUser.idNumber}`;
+    const lastRead = parseInt(localStorage.getItem(readKey) || '0');
+    const unread   = announcements.filter(a => a.id > lastRead);
+    const badge    = document.getElementById('notifBadge');
+    const menu     = document.getElementById('notifMenu');
+    if (badge) { badge.textContent = unread.length > 9 ? '9+' : unread.length; badge.style.display = unread.length > 0 ? 'flex' : 'none'; }
+    if (menu) {
+      menu.innerHTML = '';
+      if (!announcements.length) { menu.innerHTML = '<li><a class="notif-empty">No announcements yet</a></li>'; return; }
+      [...announcements].reverse().forEach(a => {
+        const li = document.createElement('li');
+        const isNew = a.id > lastRead;
+        li.innerHTML = `<a class="notif-item"><p class="notif-item-date">CCS Admin | ${a.date}${isNew?' 🔵':''}</p><p class="notif-item-text">${a.text}</p></a>`;
+        menu.appendChild(li);
+      });
+    }
+  }
+  loadNotifSummary();
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_current_user'); window.location.href = 'index.html'; });
+
+  // ── GET DATA ──
+  const allSitins  = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+  const mySitins   = allSitins.filter(s => s.idNumber === currentUser.idNumber);
+  const doneSitins = mySitins.filter(s => s.status === 'done');
+  const sessions   = currentUser.sessions !== undefined ? currentUser.sessions : 30;
+  const used       = 30 - sessions;
+  const points     = doneSitins.length;
+
+  // ── STAT CARDS ──
+  document.getElementById('statTotalSitins').textContent = doneSitins.length;
+  document.getElementById('statTotalPoints').textContent = points;
+
+  // Avg session — average lab time if timeIn/timeOut recorded
+  const timed = doneSitins.filter(s => s.timeIn && s.timeOut);
+  if (timed.length > 0) {
+    const totalMins = timed.reduce((acc, s) => {
+      const parseTime = t => { const [h,m,rest] = t.split(':'); const sec = rest ? parseInt(rest) : 0; const pm = t.toLowerCase().includes('pm'); const hr = parseInt(h) + (pm && parseInt(h) !== 12 ? 12 : 0); return hr * 60 + parseInt(m) + sec/60; };
+      return acc + Math.abs(parseTime(s.timeOut) - parseTime(s.timeIn));
+    }, 0);
+    const avgMins = Math.round(totalMins / timed.length);
+    document.getElementById('statTotalHours').textContent = `${Math.floor(totalMins/60)}h ${Math.round(totalMins%60)}m`;
+    document.getElementById('statAvgSession').textContent = `${avgMins}m`;
+  }
+
+  // ── RECENT ACTIVITY ──
+  const activityList = document.getElementById('activityList');
+  if (mySitins.length === 0) {
+    activityList.innerHTML = '<p class="summary-empty">No sit-in records yet.</p>';
+  } else {
+    activityList.innerHTML = '';
+    [...mySitins].reverse().slice(0, 20).forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'summary-activity-item';
+      const dotClass = s.status === 'done' ? 'done' : 'active';
+      item.innerHTML = `
+        <div class="summary-activity-dot ${dotClass}"></div>
+        <div class="summary-activity-info">
+          <p class="summary-activity-purpose">${s.purpose || '—'} &nbsp;·&nbsp; Lab ${s.lab || '—'}</p>
+          <p class="summary-activity-meta">${s.timeIn || '—'} → ${s.timeOut || 'Active'}</p>
+        </div>
+        <span class="summary-activity-date">${s.date || '—'}</span>`;
+      activityList.appendChild(item);
+    });
+  }
+
+  // ── GAUGE CHART ──
+  document.getElementById('gaugeNumber').textContent  = sessions;
+  document.getElementById('sessUsed').textContent      = used;
+  document.getElementById('sessTotal').textContent     = 30;
+  document.getElementById('sessRemaining').textContent = sessions;
+
+  const gaugeCtx  = document.getElementById('gaugeChart').getContext('2d');
+  const pct       = sessions / 30;
+  new Chart(gaugeCtx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [sessions, 30 - sessions],
+        backgroundColor: ['#4caf50', '#e8edf5'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270,
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '75%',
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    }
+  });
+
+  // ── SIT-IN BY PURPOSE ──
+  const purposeWrap = document.getElementById('purposeWrap');
+  const purposeCounts = {};
+  doneSitins.forEach(s => { const k = s.purpose || 'Other'; purposeCounts[k] = (purposeCounts[k] || 0) + 1; });
+
+  if (Object.keys(purposeCounts).length === 0) {
+    purposeWrap.innerHTML = '<p class="summary-empty">No data yet.</p>';
+  } else {
+    purposeWrap.innerHTML = '';
+    const max = Math.max(...Object.values(purposeCounts));
+    Object.entries(purposeCounts).sort((a,b) => b[1]-a[1]).forEach(([label, count]) => {
+      const pct = Math.round((count / max) * 100);
+      const row = document.createElement('div');
+      row.className = 'summary-purpose-bar-row';
+      row.innerHTML = `
+        <span class="summary-purpose-label">${label}</span>
+        <div class="summary-purpose-bar-bg">
+          <div class="summary-purpose-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="summary-purpose-count">${count}</span>`;
+      purposeWrap.appendChild(row);
+    });
+  }
+}

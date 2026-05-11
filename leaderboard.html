@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">&#127942; Student Leaderboard</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle notif-toggle">
+          Notifications
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </a>
+        <ul class="dropdown-menu notif-menu" id="notifMenu"></ul>
+      </li>
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="leaderboard.html" style="background:rgba(255,255,255,0.2);color:#fff;font-weight:600;">Leaderboard</a></li>
+      <li><a href="mysummary.html">My Summary</a></li>  
+      <li><a href="#" id="logoutBtn" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="leaderboard-main">
+
+    <!-- LEFT: Top Students -->
+    <div class="lb-card lb-table-card">
+      <h3 class="lb-card-title">&#128202; Top Students</h3>
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th>RANK</th>
+            <th>STUDENT</th>
+            <th>COURSE</th>
+            <th>SIT-INS</th>
+            <th>POINTS</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- RIGHT: Your Ranking -->
+    <div class="lb-card lb-rank-card">
+      <h3 class="lb-card-title">&#127942; Your Ranking</h3>
+
+      <div class="lb-rank-number" id="lbRankNumber">#—</div>
+      <p class="lb-rank-label">Your current rank</p>
+
+      <div class="lb-points-number" id="lbPoints">0</div>
+      <p class="lb-rank-label">Total Points</p>
+
+      <div class="lb-stats-row">
+        <div class="lb-stat">
+          <span class="lb-stat-number" id="lbSitins">0</span>
+          <span class="lb-stat-label">SIT-INS</span>
+        </div>
+        <div class="lb-stat">
+          <span class="lb-stat-number" id="lbTotalStudents">0</span>
+          <span class="lb-stat-label">TOTAL STUDENTS</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

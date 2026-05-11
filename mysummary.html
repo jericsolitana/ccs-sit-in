@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Summary — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">&#128202; My Summary</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle notif-toggle">
+          Notifications
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </a>
+        <ul class="dropdown-menu notif-menu" id="notifMenu"></ul>
+      </li>
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="mysummary.html" style="background:rgba(255,255,255,0.2);color:#fff;font-weight:600;">My Summary</a></li>
+      <li><a href="#" id="logoutBtn" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="summary-main">
+
+    <!-- TOP STAT CARDS -->
+    <div class="summary-stats-row">
+      <div class="summary-stat-card">
+        <div class="summary-stat-icon" style="background:#e8f0fd;">&#128187;</div>
+        <div>
+          <div class="summary-stat-number" id="statTotalSitins">0</div>
+          <div class="summary-stat-label">Total Sit-ins</div>
+        </div>
+      </div>
+      <div class="summary-stat-card">
+        <div class="summary-stat-icon" style="background:#e8f8ee;">&#128336;</div>
+        <div>
+          <div class="summary-stat-number" id="statTotalHours">—</div>
+          <div class="summary-stat-label">Total Hours</div>
+        </div>
+      </div>
+      <div class="summary-stat-card">
+        <div class="summary-stat-icon" style="background:#fff8e1;">&#127942;</div>
+        <div>
+          <div class="summary-stat-number" id="statTotalPoints">0</div>
+          <div class="summary-stat-label">Total Points</div>
+        </div>
+      </div>
+      <div class="summary-stat-card">
+        <div class="summary-stat-icon" style="background:#f3e8ff;">&#9203;</div>
+        <div>
+          <div class="summary-stat-number" id="statAvgSession">—</div>
+          <div class="summary-stat-label">Avg Session</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="summary-grid">
+
+      <!-- LEFT: Recent Sit-in Activity -->
+      <div class="summary-card">
+        <div class="summary-card-title">&#128337; Recent Sit-in Activity</div>
+        <div class="summary-activity-list" id="activityList">
+          <p class="summary-empty">No sit-in records yet.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="summary-right-col">
+
+        <!-- Session Remaining gauge -->
+        <div class="summary-card">
+          <div class="summary-card-title">&#9203; Session Remaining</div>
+          <div class="summary-gauge-wrap">
+            <canvas id="gaugeChart" width="220" height="130"></canvas>
+            <div class="summary-gauge-center">
+              <span class="summary-gauge-number" id="gaugeNumber">0</span>
+              <span class="summary-gauge-label">SESSIONS LEFT</span>
+            </div>
+          </div>
+          <div class="summary-session-stats">
+            <div class="summary-session-stat">
+              <span id="sessUsed">0</span>
+              <span>USED</span>
+            </div>
+            <div class="summary-session-stat">
+              <span id="sessTotal">30</span>
+              <span>TOTAL</span>
+            </div>
+            <div class="summary-session-stat">
+              <span id="sessRemaining">0</span>
+              <span>REMAINING</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sit-in by Purpose -->
+        <div class="summary-card">
+          <div class="summary-card-title">&#128200; Sit-in by Purpose</div>
+          <div class="summary-purpose-wrap" id="purposeWrap">
+            <p class="summary-empty">No data yet.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

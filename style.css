@@ -2666,3 +2666,546 @@ main {
   color: #e02020;
   background: #fdf0f0;
 }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── LEADERBOARD LAYOUT ── */
+.leaderboard-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  padding: 24px 28px;
+  align-items: start;
+}
+
+/* ── SHARED CARD ── */
+.lb-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  overflow: hidden;
+}
+
+.lb-card-title {
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Slightly wider gap for better icon alignment */
+  margin: 0;
+  
+  /* Modern styling to match other dashboard cards */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* ── LEADERBOARD TABLE ── */
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lb-table thead tr { background: #f0f4ff; }
+
+.lb-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #555;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #eef0f5;
+}
+
+.lb-table td {
+  padding: 12px 16px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.lb-table tbody tr:last-child td { border-bottom: none; }
+.lb-table tbody tr:hover { background: #f7f9fc; }
+
+/* ── RANK MEDAL ── */
+.lb-rank-medal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.lb-rank-medal.gold   { background: linear-gradient(135deg, #f0c040, #e0a800); }
+.lb-rank-medal.silver { background: linear-gradient(135deg, #b0b8c8, #8898a8); }
+.lb-rank-medal.bronze { background: linear-gradient(135deg, #d08040, #b06020); }
+.lb-rank-medal.normal { background: #dde3ef; color: #555; font-size: 12px; }
+
+/* ── YOU BADGE ── */
+.lb-you-badge {
+  display: inline-block;
+  background: #2b7de9;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ── HIGHLIGHT CURRENT USER ROW ── */
+.lb-my-row { background: #f0f5ff !important; }
+.lb-my-row td { font-weight: 600; }
+
+/* ── POINTS BADGE ── */
+.lb-points-badge {
+  display: inline-block;
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #f0c040;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── RIGHT RANK CARD ── */
+.lb-rank-card { padding: 30px 20px; text-align: center; }
+
+.lb-rank-number {
+  font-size: 64px;
+  font-weight: 900;
+  color: #f0c040;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.lb-rank-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 28px;
+}
+
+.lb-points-number {
+  font-size: 48px;
+  font-weight: 800;
+  color: #f0c040;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.lb-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eef0f5;
+}
+
+.lb-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+.lb-stat-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.lb-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.lb-empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  padding: 30px 0;
+}
+
+@media (max-width: 780px) {
+  .leaderboard-main { grid-template-columns: 1fr; }
+}
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   (overrides the old dashboard layout)
+   ====================================== */
+
+/* ── DASHBOARD MAIN — fit viewport, no scroll ── */
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 220px 1fr 380px;
+  gap: 14px;
+  padding: 14px 20px;
+  flex: 1;
+  align-items: stretch;
+  height: calc(100vh - 52px); /* fill remaining height after navbar */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ── ALL CARDS — fill height ── */
+.dash-card {
+  min-height: unset;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+/* ── STUDENT INFO CARD ── */
+.student-info-card {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.student-avatar {
+  width: 70px;
+  height: 70px;
+  font-size: 22px;
+  margin: 8px auto 14px;
+}
+
+.student-details {
+  gap: 7px;
+}
+
+.student-details li {
+  font-size: 12.5px;
+}
+
+.btn-sitin-request {
+  margin-top: auto;
+  padding: 9px;
+  font-size: 13px;
+}
+
+/* ── ANNOUNCEMENT CARD — smaller, scrollable inside ── */
+.announcement-card {
+  flex: 1;
+}
+
+.announcement-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: unset;
+}
+
+.announcement-item {
+  padding: 8px 12px;
+}
+
+.announce-author { font-size: 10px; margin-bottom: 3px; }
+.announce-body   { font-size: 12px; }
+
+/* ── RULES CARD — bigger, scrollable inside ── */
+.rules-card {
+  flex: 1;
+}
+
+.rules-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: unset;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.rules-header    { font-size: 11.5px; margin-bottom: 4px; }
+.rules-subheader { font-size: 11.5px; margin-bottom: 6px; }
+.rules-intro     { font-size: 11.5px; margin-bottom: 8px; }
+.rules-list      { gap: 6px; padding-left: 14px; }
+.rules-list li   { font-size: 11.5px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .dashboard-main {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+  .dash-card { height: auto; min-height: 200px; }
+  .rules-body, .announcement-list { max-height: 300px; }
+}
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── MY SUMMARY PAGE ── */
+.summary-main {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── TOP STAT CARDS ── */
+.summary-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.summary-stat-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.summary-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.summary-stat-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.summary-stat-label {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+/* ── BOTTOM GRID ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  flex: 1;
+  align-items: start;
+}
+
+.summary-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── SHARED CARD ── */
+.summary-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.summary-card-title {
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700; /* Slightly heavier weight for better contrast on the gradient */
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Improved spacing for icons */
+  
+  /* Modern styling consistent with your other updated cards */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.summary-empty {
+  text-align: center;
+  font-size: 13px;
+  color: #bbb;
+  padding: 30px 0;
+}
+
+/* ── ACTIVITY LIST ── */
+.summary-activity-list {
+  padding: 10px 0;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.summary-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background 0.15s;
+}
+
+.summary-activity-item:last-child { border-bottom: none; }
+.summary-activity-item:hover { background: #f7f9fc; }
+
+.summary-activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2b7de9;
+  flex-shrink: 0;
+}
+
+.summary-activity-dot.done   { background: #4caf50; }
+.summary-activity-dot.active { background: #f0a500; }
+
+.summary-activity-info { flex: 1; }
+
+.summary-activity-purpose {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.summary-activity-meta {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.summary-activity-date {
+  font-size: 11px;
+  color: #bbb;
+  white-space: nowrap;
+}
+
+/* ── GAUGE CHART ── */
+.summary-gauge-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px 0;
+}
+
+.summary-gauge-center {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.summary-gauge-number {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a2e;
+  display: block;
+  line-height: 1;
+}
+
+.summary-gauge-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ── SESSION STATS ── */
+.summary-session-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.summary-session-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.summary-session-stat span:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.summary-session-stat span:last-child {
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ── PURPOSE CHART ── */
+.summary-purpose-wrap {
+  padding: 16px;
+}
+
+.summary-purpose-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.summary-purpose-label {
+  font-size: 12px;
+  color: #555;
+  width: 90px;
+  flex-shrink: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.summary-purpose-bar-bg {
+  flex: 1;
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.summary-purpose-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #2b7de9, #4caf50);
+  transition: width 0.6s ease;
+}
+
+.summary-purpose-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .summary-stats-row { grid-template-columns: 1fr 1fr; }
+  .summary-grid      { grid-template-columns: 1fr; }
+}
