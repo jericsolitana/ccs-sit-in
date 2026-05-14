@@ -3209,3 +3209,201 @@ main {
   .summary-stats-row { grid-template-columns: 1fr 1fr; }
   .summary-grid      { grid-template-columns: 1fr; }
 }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── LAB STATUS PAGE ── */
+.labstatus-main {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── SECTION WRAPPER ── */
+.labstatus-section {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.labstatus-section-header {
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  /* Adds a slight shadow for depth consistent with other section headers */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  
+  /* If there is text directly inside this header, ensure it is readable */
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.labstatus-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.labstatus-live-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4cff90;
+  background: rgba(76, 255, 144, 0.15);
+  border: 1px solid rgba(76, 255, 144, 0.3);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+/* ── LABS GRID ── */
+.labstatus-labs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.lab-card {
+  border: 1px solid #eef0f5;
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: box-shadow 0.2s;
+}
+
+.lab-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+.lab-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lab-card-icon {
+  font-size: 22px;
+  color: #4caf50;
+}
+
+.lab-card-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.lab-card-pcs {
+  font-size: 11px;
+  color: #999;
+  margin-top: 1px;
+}
+
+.lab-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.lab-free-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.lab-inuse-count {
+  font-size: 12px;
+  color: #999;
+}
+
+.labstatus-updated {
+  text-align: right;
+  font-size: 11px;
+  color: #bbb;
+  padding: 0 20px 12px;
+  margin: 0;
+}
+
+/* ── SOFTWARE GRID ── */
+.labstatus-software-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.software-card {
+  border: 1px solid #eef0f5;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: box-shadow 0.2s;
+}
+
+.software-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+.software-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.software-info { flex: 1; min-width: 0; }
+
+.software-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.software-desc {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.software-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.software-badge.installed {
+  background: #e8f8ee;
+  color: #2e7d32;
+}
+
+@media (max-width: 900px) {
+  .labstatus-labs-grid     { grid-template-columns: 1fr 1fr; }
+  .labstatus-software-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  .labstatus-labs-grid     { grid-template-columns: 1fr; }
+  .labstatus-software-grid { grid-template-columns: 1fr; }
+}

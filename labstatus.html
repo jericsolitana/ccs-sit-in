@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lab Status — CCS Sit-in Monitoring System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <span class="nav-brand">&#128187; Student Lab Status</span>
+    <ul class="nav-links">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li class="nav-dropdown">
+        <a href="#" class="dropdown-toggle notif-toggle">
+          Notifications
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </a>
+        <ul class="dropdown-menu notif-menu" id="notifMenu"></ul>
+      </li>
+      <li><a href="edit-profile.html">Edit Profile</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reservation.html">Reservation</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="mysummary.html">My Summary</a></li>
+      <li><a href="labstatus.html">Lab Status</a></li>
+      <li><a href="#" id="logoutBtn" class="btn-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="labstatus-main">
+
+    <!-- LABORATORY STATUS SECTION -->
+    <div class="labstatus-section">
+      <div class="labstatus-section-header">
+        <h3 class="labstatus-section-title">&#128187; Laboratory Status</h3>
+        <span class="labstatus-live-badge">&#9679; Live · updates every 30s</span>
+      </div>
+
+      <div class="labstatus-labs-grid" id="labsGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <p class="labstatus-updated">Last updated: <span id="lastUpdated">—</span></p>
+    </div>
+
+    <!-- AVAILABLE SOFTWARE SECTION -->
+    <div class="labstatus-section">
+      <div class="labstatus-section-header">
+        <h3 class="labstatus-section-title">&#128187; Available Software</h3>
+      </div>
+
+      <div class="labstatus-software-grid">
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#fff0f0;">&#128196;</div>
+          <div class="software-info">
+            <p class="software-name">Microsoft Office 365</p>
+            <p class="software-desc">Word, Excel, PowerPoint</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8f4ff;">&#60;/&#62;</div>
+          <div class="software-info">
+            <p class="software-name">Visual Studio Code</p>
+            <p class="software-desc">Code editor</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#fff8e1;">&#9749;</div>
+          <div class="software-info">
+            <p class="software-name">NetBeans IDE</p>
+            <p class="software-desc">Java development</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#ffe8e8;">&#128421;</div>
+          <div class="software-info">
+            <p class="software-name">XAMPP</p>
+            <p class="software-desc">Local PHP server</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8f0ff;">&#128290;</div>
+          <div class="software-info">
+            <p class="software-name">Python 3.x</p>
+            <p class="software-desc">Interpreter + IDLE</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8ffe8;">&#128241;</div>
+          <div class="software-info">
+            <p class="software-name">Android Studio</p>
+            <p class="software-desc">Mobile development</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e0f0ff;">&#128190;</div>
+          <div class="software-info">
+            <p class="software-name">MySQL Workbench</p>
+            <p class="software-desc">Database management</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#f0e8ff;">&#127912;</div>
+          <div class="software-info">
+            <p class="software-name">Figma (Browser)</p>
+            <p class="software-desc">UI/UX design</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8f4ff;">&#127760;</div>
+          <div class="software-info">
+            <p class="software-name">Google Chrome</p>
+            <p class="software-desc">Web browser</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8f8ff;">&#128268;</div>
+          <div class="software-info">
+            <p class="software-name">Cisco Packet Tracer</p>
+            <p class="software-desc">Network simulation</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#e8f0ff;">&#128247;</div>
+          <div class="software-info">
+            <p class="software-name">Adobe Photoshop</p>
+            <p class="software-desc">Photo editing</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+        <div class="software-card">
+          <div class="software-icon" style="background:#f0f0f0;">&#128250;</div>
+          <div class="software-info">
+            <p class="software-name">VMware Workstation</p>
+            <p class="software-desc">Virtual machines</p>
+            <span class="software-badge installed">&#10003; Installed</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
