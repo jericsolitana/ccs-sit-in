@@ -1398,3 +1398,101 @@ if (summaryMain) {
     });
   }
 }
+
+
+// ======================================
+//  LAB STATUS (labstatus.html)
+// ======================================
+
+const labsGrid = document.getElementById('labsGrid');
+if (labsGrid) {
+  const currentUser = JSON.parse(localStorage.getItem('ccs_current_user') || 'null');
+  if (!currentUser) { window.location.href = 'index.html'; }
+
+  // ── NOTIFICATIONS ──
+  function loadNotifLab() {
+    const announcements = JSON.parse(localStorage.getItem('ccs_announcements') || '[]');
+    const readKey  = `ccs_notif_read_${currentUser.idNumber}`;
+    const lastRead = parseInt(localStorage.getItem(readKey) || '0');
+    const unread   = announcements.filter(a => a.id > lastRead);
+    const badge    = document.getElementById('notifBadge');
+    const menu     = document.getElementById('notifMenu');
+    if (badge) { badge.textContent = unread.length > 9 ? '9+' : unread.length; badge.style.display = unread.length > 0 ? 'flex' : 'none'; }
+    if (menu) {
+      menu.innerHTML = '';
+      if (!announcements.length) { menu.innerHTML = '<li><a class="notif-empty">No announcements yet</a></li>'; return; }
+      [...announcements].reverse().forEach(a => {
+        const li = document.createElement('li');
+        const isNew = a.id > lastRead;
+        li.innerHTML = `<a class="notif-item"><p class="notif-item-date">CCS Admin | ${a.date}${isNew?' 🔵':''}</p><p class="notif-item-text">${a.text}</p></a>`;
+        menu.appendChild(li);
+      });
+      if (unread.length > 0) {
+        const markLi = document.createElement('li');
+        markLi.innerHTML = `<a class="notif-mark-read" id="markReadBtn">Mark all as read</a>`;
+        menu.appendChild(markLi);
+        document.getElementById('markReadBtn').addEventListener('click', (e) => {
+          e.preventDefault();
+          const latest = Math.max(...announcements.map(a => a.id || 0));
+          localStorage.setItem(readKey, latest);
+          loadNotifLab();
+        });
+      }
+    }
+  }
+  loadNotifLab();
+
+  // Logout
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault(); localStorage.removeItem('ccs_current_user'); window.location.href = 'index.html';
+  });
+
+  // ── LABS CONFIG ──
+  const LABS = [
+    { id: '524', name: 'Laboratory 524', total: 40 },
+    { id: '525', name: 'Laboratory 525', total: 40 },
+    { id: '526', name: 'Laboratory 526', total: 40 },
+    { id: '527', name: 'Laboratory 527', total: 40 },
+    { id: '528', name: 'Laboratory 528', total: 40 },
+  ];
+
+  // ── RENDER LABS ──
+  function renderLabs() {
+    const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+    const activeSitins = sitins.filter(s => s.status === 'active');
+
+    labsGrid.innerHTML = '';
+
+    LABS.forEach(lab => {
+      // Count active sit-ins in this lab
+      const inUse = activeSitins.filter(s => s.lab === lab.id).length;
+      const free  = lab.total - inUse;
+
+      const card = document.createElement('div');
+      card.className = 'lab-card';
+      card.innerHTML = `
+        <div class="lab-card-header">
+          <span class="lab-card-icon">&#128187;</span>
+          <div>
+            <p class="lab-card-name">${lab.name}</p>
+            <p class="lab-card-pcs">${inUse} / ${lab.total} PCs available</p>
+          </div>
+        </div>
+        <div class="lab-card-footer">
+          <span class="lab-free-count">${free} free</span>
+          <span class="lab-inuse-count">${inUse} in use</span>
+        </div>`;
+      labsGrid.appendChild(card);
+    });
+
+    // Update last updated time
+    const now = new Date();
+    document.getElementById('lastUpdated').textContent = now.toLocaleTimeString();
+  }
+
+  renderLabs();
+
+  // Auto-refresh every 30 seconds
+  setInterval(renderLabs, 30000);
+}

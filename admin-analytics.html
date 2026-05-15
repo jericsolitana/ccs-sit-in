@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics — CCS Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-nav">
+    <span class="nav-brand">College of Computer Studies Admin</span>
+    <ul class="nav-links">
+      <li><a href="admin.html">Home</a></li>
+      <li><a href="#" id="openSearchBtn">Search</a></li>
+      <li><a href="admin-students.html">Students</a></li>
+      <li><a href="admin-sitin.html">Sit-in</a></li>
+      <li><a href="admin-records.html">View Sit-in Records</a></li>
+      <li><a href="admin-reports.html">Sit-in Reports</a></li>
+      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="admin-analytics.html" class="nav-active">Analytics</a></li>
+      <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="analytics-main">
+
+    <h2 class="analytics-title">&#128202; Analytics &amp; Reports</h2>
+
+    <!-- TOP STAT CARDS -->
+    <div class="analytics-stats-row">
+      <div class="analytics-stat-card" style="border-left:4px solid #2b7de9;">
+        <div class="analytics-stat-icon" style="background:#e8f0fd;">&#128101;</div>
+        <div>
+          <p class="analytics-stat-label">Registered Students</p>
+          <p class="analytics-stat-number" id="aStatStudents">0</p>
+        </div>
+      </div>
+      <div class="analytics-stat-card" style="border-left:4px solid #f0a500;">
+        <div class="analytics-stat-icon" style="background:#fff8e1;">&#128187;</div>
+        <div>
+          <p class="analytics-stat-label">Total Sit-ins</p>
+          <p class="analytics-stat-number" id="aStatSitins">0</p>
+        </div>
+      </div>
+      <div class="analytics-stat-card" style="border-left:4px solid #4caf50;">
+        <div class="analytics-stat-icon" style="background:#e8f8ee;">&#9679;</div>
+        <div>
+          <p class="analytics-stat-label">Active Now</p>
+          <p class="analytics-stat-number" id="aStatActive">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="analytics-charts-row">
+
+      <!-- Sit-ins Over Time -->
+      <div class="analytics-card analytics-card-wide">
+        <div class="analytics-card-header">
+          <span>&#128202; Sit-ins Over Time</span>
+          <div class="analytics-time-btns">
+            <button class="analytics-time-btn active" id="btnDaily">Daily</button>
+            <button class="analytics-time-btn" id="btnWeekly">Weekly</button>
+            <button class="analytics-time-btn" id="btnMonthly">Monthly</button>
+          </div>
+        </div>
+        <div class="analytics-chart-area">
+          <canvas id="timeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- By Purpose -->
+      <div class="analytics-card">
+        <div class="analytics-card-header"><span>&#127752; By Purpose</span></div>
+        <div class="analytics-chart-area">
+          <canvas id="purposeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- By Lab -->
+      <div class="analytics-card">
+        <div class="analytics-card-header"><span>&#127970; By Lab</span></div>
+        <div class="analytics-chart-area">
+          <canvas id="labChart2"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="analytics-bottom-row">
+
+      <!-- Top Students -->
+      <div class="analytics-card analytics-card-half">
+        <div class="analytics-card-header">
+          <span>&#127942; Top Students</span>
+          <button class="analytics-export-btn" id="exportCsvAnalytics">&#11015; Export CSV</button>
+        </div>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Sit-ins</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="analyticsTopStudents"></tbody>
+        </table>
+      </div>
+
+      <!-- By Course -->
+      <div class="analytics-card analytics-card-half">
+        <div class="analytics-card-header"><span>&#127979; By Course</span></div>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Students</th>
+              <th>Sit-ins</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody id="analyticsByCourse"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <div class="search-box-header">
+        <span class="search-box-title">&#128269; Find Student</span>
+        <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
+        <button class="search-go-btn" id="searchGoBtn">&#128269;</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
