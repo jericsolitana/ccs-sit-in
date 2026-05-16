@@ -1496,3 +1496,239 @@ if (labsGrid) {
   // Auto-refresh every 30 seconds
   setInterval(renderLabs, 30000);
 }
+
+
+// ======================================
+//  ADMIN ANALYTICS (admin-analytics.html)
+// ======================================
+
+const analyticsMain = document.querySelector('.analytics-main');
+if (analyticsMain) {
+  if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
+
+  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+  if (adminLogoutBtn) adminLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
+
+  const users  = JSON.parse(localStorage.getItem('ccs_users')  || '[]');
+  const sitins = JSON.parse(localStorage.getItem('ccs_sitins') || '[]');
+  const done   = sitins.filter(s => s.status === 'done');
+  const active = sitins.filter(s => s.status === 'active');
+
+  // ── STAT CARDS ──
+  document.getElementById('aStatStudents').textContent = users.length;
+  document.getElementById('aStatSitins').textContent   = sitins.length;
+  document.getElementById('aStatActive').textContent   = active.length;
+
+  // ── COLORS ──
+  const COLORS = ['#2b7de9','#f0a500','#4caf50','#e05c5c','#9c5cf0','#00bcd4','#ff7043','#8bc34a'];
+
+  // ── SIT-INS OVER TIME CHART ──
+  let timeChart = null;
+
+  function buildTimeChart(mode) {
+    const ctx = document.getElementById('timeChart').getContext('2d');
+    if (timeChart) timeChart.destroy();
+
+    const now   = new Date();
+    let labels  = [];
+    let counts  = [];
+
+    if (mode === 'daily') {
+      // Last 7 days
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        labels.push(key.slice(5)); // MM-DD
+        counts.push(sitins.filter(s => s.date === key).length);
+      }
+    } else if (mode === 'weekly') {
+      // Last 4 weeks
+      for (let i = 3; i >= 0; i--) {
+        const start = new Date(now);
+        start.setDate(start.getDate() - (i * 7 + 6));
+        const end   = new Date(now);
+        end.setDate(end.getDate() - (i * 7));
+        const label = `W${4-i}`;
+        labels.push(label);
+        counts.push(sitins.filter(s => {
+          if (!s.date) return false;
+          const d = new Date(s.date);
+          return d >= start && d <= end;
+        }).length);
+      }
+    } else {
+      // Last 6 months
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now);
+        d.setMonth(d.getMonth() - i);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        labels.push(key.slice(2));
+        counts.push(sitins.filter(s => s.date && s.date.startsWith(key)).length);
+      }
+    }
+
+    timeChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: counts,
+          borderColor: '#2b7de9',
+          backgroundColor: 'rgba(43,125,233,0.08)',
+          borderWidth: 2,
+          pointBackgroundColor: '#2b7de9',
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } },
+          x: { ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+
+  buildTimeChart('daily');
+
+  // Time filter buttons
+  ['btnDaily','btnWeekly','btnMonthly'].forEach((id, idx) => {
+    const modes = ['daily','weekly','monthly'];
+    document.getElementById(id).addEventListener('click', () => {
+      document.querySelectorAll('.analytics-time-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      buildTimeChart(modes[idx]);
+    });
+  });
+
+  // ── BY PURPOSE CHART ──
+  const purposeCounts = {};
+  sitins.forEach(s => { const k = s.purpose || 'Other'; purposeCounts[k] = (purposeCounts[k] || 0) + 1; });
+
+  new Chart(document.getElementById('purposeChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(purposeCounts).length ? Object.keys(purposeCounts) : ['No data'],
+      datasets: [{
+        data: Object.keys(purposeCounts).length ? Object.values(purposeCounts) : [1],
+        backgroundColor: COLORS,
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12, padding: 8 } } }
+    }
+  });
+
+  // ── BY LAB CHART ──
+  const labCounts = {};
+  sitins.forEach(s => { const k = `Lab ${s.lab||'?'}`; labCounts[k] = (labCounts[k] || 0) + 1; });
+
+  new Chart(document.getElementById('labChart2').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(labCounts).length ? Object.keys(labCounts) : ['No data'],
+      datasets: [{
+        data: Object.keys(labCounts).length ? Object.values(labCounts) : [0],
+        backgroundColor: COLORS,
+        borderRadius: 4,
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } },
+        x: { ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // ── TOP STUDENTS TABLE ──
+  const studentStats = users.map(u => {
+    const mySitins   = done.filter(s => s.idNumber === u.idNumber);
+    return { ...u, sitinCount: mySitins.length, points: mySitins.length };
+  }).sort((a, b) => b.points - a.points);
+
+  const topBody = document.getElementById('analyticsTopStudents');
+  if (studentStats.length === 0) {
+    topBody.innerHTML = `<tr><td colspan="5" class="table-empty">No data yet.</td></tr>`;
+  } else {
+    studentStats.slice(0, 10).forEach((u, idx) => {
+      const rank   = idx + 1;
+      const medal  = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+      const tr     = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="a-medal">${medal}</span></td>
+        <td>
+          <div>${u.firstName} ${u.lastName}</div>
+          <div class="a-student-id">${u.idNumber}</div>
+        </td>
+        <td>${u.course}</td>
+        <td>${u.sitinCount}</td>
+        <td><span class="a-points-badge">${u.points} pts</span></td>`;
+      topBody.appendChild(tr);
+    });
+  }
+
+  // ── BY COURSE TABLE ──
+  const courseCounts = {};
+  const courseSitins = {};
+  users.forEach(u => {
+    courseCounts[u.course] = (courseCounts[u.course] || 0) + 1;
+  });
+  done.forEach(s => {
+    const user = users.find(u => u.idNumber === s.idNumber);
+    if (user) { courseSitins[user.course] = (courseSitins[user.course] || 0) + 1; }
+  });
+
+  const courseBody    = document.getElementById('analyticsByCourse');
+  const totalStudents = users.length || 1;
+
+  if (Object.keys(courseCounts).length === 0) {
+    courseBody.innerHTML = `<tr><td colspan="4" class="table-empty">No data yet.</td></tr>`;
+  } else {
+    Object.entries(courseCounts).forEach(([course, count]) => {
+      const sits = courseSitins[course] || 0;
+      const pct  = Math.round((count / totalStudents) * 100);
+      const tr   = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${course}</td>
+        <td>${count}</td>
+        <td>${sits}</td>
+        <td>
+          <div class="a-share-bar-bg">
+            <div class="a-share-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </td>`;
+      courseBody.appendChild(tr);
+    });
+  }
+
+  // ── EXPORT CSV ──
+  document.getElementById('exportCsvAnalytics').addEventListener('click', () => {
+    if (!studentStats.length) { alert('No data to export.'); return; }
+    let csv = 'Rank,ID Number,Name,Course,Sit-ins,Points\n';
+    studentStats.forEach((u, i) => {
+      csv += `${i+1},${u.idNumber},"${u.firstName} ${u.lastName}",${u.course},${u.sitinCount},${u.points}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'analytics-report.csv'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  initSearchModal();
+}
