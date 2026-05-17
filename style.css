@@ -3625,3 +3625,296 @@ main {
   .analytics-bottom-row { grid-template-columns: 1fr; }
   .analytics-chart-area { height: 180px; }
 }
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── SOFTWARE PAGE ── */
+.software-main {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.software-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.software-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── SHARED CARD ── */
+.software-upload-card,
+.software-registered-card,
+.software-overview-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.software-card-header {
+  /* Blend: Purple (#7126c2) to Gold (#c5a019) */
+  background: linear-gradient(135deg, #7126c2 0%, #c5a019 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700; /* Increased to 700 to keep text highly legible on the gradient */
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Enhanced icon spacing */
+  
+  /* Drop shadow and text rendering adjustments matching other cards */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.software-card-body { padding: 18px; }
+
+/* ── DROP ZONE ── */
+.software-dropzone {
+  border: 2px dashed #d0d8ea;
+  border-radius: 8px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 8px;
+}
+
+.software-dropzone:hover,
+.software-dropzone.dragover {
+  border-color: #f0a500;
+  background: #fffbf0;
+}
+
+.software-dropzone-icon { font-size: 36px; margin-bottom: 8px; color: #f0a500; }
+.software-dropzone-text { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 4px; }
+.software-dropzone-hint { font-size: 11px; color: #aaa; }
+
+.software-filename-display {
+  font-size: 12px;
+  color: #4caf50;
+  font-weight: 600;
+  margin-bottom: 12px;
+  min-height: 16px;
+}
+
+/* ── FORM FIELDS ── */
+.software-field { margin-bottom: 14px; }
+
+.software-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2b7de9;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
+
+.software-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #dde3ef;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: #333;
+  background: #f9fafc;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.software-input:focus {
+  border-color: #2b7de9;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(43,125,233,0.12);
+}
+
+.software-textarea { resize: vertical; min-height: 80px; }
+
+/* ── LAB CHECKBOXES ── */
+.software-labs-check {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.software-labs-check label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2b7de9;
+  cursor: pointer;
+}
+
+.software-labs-check input[type="checkbox"] {
+  accent-color: #2b7de9;
+  width: 14px;
+  height: 14px;
+}
+
+/* ── UPLOAD BUTTON ── */
+.software-upload-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 6px;
+}
+
+.software-upload-btn:hover  { background: #3d9e42; }
+.software-upload-btn:active { transform: scale(0.99); }
+
+/* ── RIGHT COLUMN ── */
+.software-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── SEARCH INPUT ── */
+.software-search-input {
+  padding: 5px 10px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  outline: none;
+  width: 160px;
+}
+
+.software-search-input::placeholder { color: rgba(255,255,255,0.6); }
+.software-search-input:focus { background: rgba(255,255,255,0.25); }
+
+/* ── REGISTERED LIST ── */
+.software-registered-list {
+  padding: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.software-empty-state {
+  text-align: center;
+  padding: 30px 0;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.software-reg-item {
+  border: 1px solid #eef0f5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #f9fafc;
+  transition: box-shadow 0.15s;
+}
+
+.software-reg-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+.software-reg-info { flex: 1; min-width: 0; }
+
+.software-reg-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.software-reg-meta { font-size: 11px; color: #999; margin-top: 2px; }
+
+.software-reg-labs {
+  font-size: 10px;
+  color: #2b7de9;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.software-reg-delete {
+  background: none;
+  border: none;
+  color: #ddd;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.software-reg-delete:hover { color: #e02020; background: #fdf0f0; }
+
+/* ── LAB OVERVIEW ── */
+.software-labs-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 14px;
+}
+
+.software-lab-tile {
+  border: 1px solid #eef0f5;
+  border-radius: 8px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.software-lab-tile-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f0a500;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.software-lab-tile-count {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1;
+}
+
+.software-lab-tile-label {
+  font-size: 10px;
+  color: #aaa;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .software-grid { grid-template-columns: 1fr; }
+  .software-labs-overview { grid-template-columns: repeat(2, 1fr); }
+}

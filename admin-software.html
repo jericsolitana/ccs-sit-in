@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Software — CCS Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-nav">
+    <span class="nav-brand">College of Computer Studies Admin</span>
+    <ul class="nav-links">
+      <li><a href="admin.html">Home</a></li>
+      <li><a href="#" id="openSearchBtn">Search</a></li>
+      <li><a href="admin-students.html">Students</a></li>
+      <li><a href="admin-sitin.html">Sit-in</a></li>
+      <li><a href="admin-records.html">Sit-in Records</a></li>
+      <li><a href="admin-reports.html">Sit-in Reports</a></li>
+      <li><a href="admin-feedback.html">Feedback Reports</a></li>
+      <li><a href="admin-reservation.html">Reservation</a></li>
+      <li><a href="admin-analytics.html">Analytics</a></li>
+      <li><a href="admin-software.html" class="nav-active">Software</a></li>
+      <li><a href="#" id="adminLogoutBtn" class="btn-logout-yellow">Log out</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="software-main">
+
+    <h2 class="software-title">&#9729; Software App Import &amp; Upload</h2>
+
+    <div class="software-grid">
+
+      <!-- LEFT: Upload Form -->
+      <div class="software-upload-card">
+        <div class="software-card-header">&#9729; Upload Software / File</div>
+        <div class="software-card-body">
+
+          <!-- Drop Zone -->
+          <div class="software-dropzone" id="dropZone">
+            <div class="software-dropzone-icon">&#9729;</div>
+            <p class="software-dropzone-text">Drag &amp; drop files here</p>
+            <p class="software-dropzone-hint">or click to browse · zip, exe, msi, apk, pdf, docx supported</p>
+            <input type="file" id="fileInput" accept=".zip,.exe,.msi,.apk,.pdf,.docx" style="display:none;" />
+          </div>
+          <p class="software-filename-display" id="fileNameDisplay"></p>
+
+          <!-- Fields -->
+          <div class="software-field">
+            <label class="software-field-label">SOFTWARE / FILE NAME</label>
+            <input type="text" id="swName" placeholder="e.g. Visual Studio Code 1.88" class="software-input" />
+          </div>
+
+          <div class="software-field">
+            <label class="software-field-label">CATEGORY</label>
+            <select id="swCategory" class="software-input">
+              <option value="">Select category</option>
+              <option value="IDE / Code Editor">IDE / Code Editor</option>
+              <option value="Programming Language">Programming Language</option>
+              <option value="Database">Database</option>
+              <option value="Web Server">Web Server</option>
+              <option value="Design Tool">Design Tool</option>
+              <option value="Office Suite">Office Suite</option>
+              <option value="Browser">Browser</option>
+              <option value="Network Tool">Network Tool</option>
+              <option value="Virtualization">Virtualization</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="software-field">
+            <label class="software-field-label">DESCRIPTION</label>
+            <textarea id="swDesc" rows="3" placeholder="Brief description of this software" class="software-input software-textarea"></textarea>
+          </div>
+
+          <div class="software-field">
+            <label class="software-field-label">AVAILABLE IN LABS</label>
+            <div class="software-labs-check">
+              <label><input type="checkbox" class="sw-lab-check" value="524" /> LAB 524</label>
+              <label><input type="checkbox" class="sw-lab-check" value="525" /> LAB 525</label>
+              <label><input type="checkbox" class="sw-lab-check" value="526" /> LAB 526</label>
+              <label><input type="checkbox" class="sw-lab-check" value="527" /> LAB 527</label>
+              <label><input type="checkbox" class="sw-lab-check" value="528" /> LAB 528</label>
+            </div>
+          </div>
+
+          <button class="software-upload-btn" id="uploadSwBtn">&#9729; UPLOAD &amp; REGISTER SOFTWARE</button>
+
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="software-right-col">
+
+        <!-- Registered Software -->
+        <div class="software-registered-card">
+          <div class="software-card-header" style="justify-content:space-between;">
+            <span>&#128187; Registered Software</span>
+            <input type="text" id="swSearchInput" placeholder="Search..." class="software-search-input" />
+          </div>
+          <div class="software-registered-list" id="registeredList">
+            <div class="software-empty-state">
+              <span style="font-size:40px;">&#128188;</span>
+              <p>No software registered yet.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Software Overview -->
+        <div class="software-overview-card">
+          <div class="software-card-header">&#128187; Lab Software Overview</div>
+          <div class="software-labs-overview" id="labsOverview">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <div class="search-box-header">
+        <span class="search-box-title">&#128269; Find Student</span>
+        <button class="search-close-btn" id="closeSearchBtn">&#10005;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="Search by name or ID number..." />
+        <button class="search-go-btn" id="searchGoBtn">&#128269;</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

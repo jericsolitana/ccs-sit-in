@@ -1451,10 +1451,10 @@ if (labsGrid) {
   // ── LABS CONFIG ──
   const LABS = [
     { id: '524', name: 'Laboratory 524', total: 40 },
-    { id: '525', name: 'Laboratory 525', total: 40 },
     { id: '526', name: 'Laboratory 526', total: 40 },
-    { id: '527', name: 'Laboratory 527', total: 40 },
     { id: '528', name: 'Laboratory 528', total: 40 },
+    { id: '530', name: 'Laboratory 530', total: 40 },
+    { id: '542', name: 'Laboratory 542', total: 40 },
   ];
 
   // ── RENDER LABS ──
