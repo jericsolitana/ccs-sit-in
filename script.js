@@ -1451,10 +1451,10 @@ if (labsGrid) {
   // ── LABS CONFIG ──
   const LABS = [
     { id: '524', name: 'Laboratory 524', total: 40 },
+    { id: '525', name: 'Laboratory 525', total: 40 },
     { id: '526', name: 'Laboratory 526', total: 40 },
+    { id: '527', name: 'Laboratory 527', total: 40 },
     { id: '528', name: 'Laboratory 528', total: 40 },
-    { id: '530', name: 'Laboratory 530', total: 40 },
-    { id: '542', name: 'Laboratory 542', total: 40 },
   ];
 
   // ── RENDER LABS ──
@@ -1728,6 +1728,144 @@ if (analyticsMain) {
     const a    = document.createElement('a');
     a.href = url; a.download = 'analytics-report.csv'; a.click();
     URL.revokeObjectURL(url);
+  });
+
+  initSearchModal();
+}
+
+
+// ======================================
+//  ADMIN SOFTWARE (admin-software.html)
+// ======================================
+
+const uploadSwBtn = document.getElementById('uploadSwBtn');
+if (uploadSwBtn) {
+  if (!localStorage.getItem('ccs_admin')) { window.location.href = 'index.html'; }
+
+  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+  if (adminLogoutBtn) adminLogoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('ccs_admin'); window.location.href = 'index.html'; });
+
+  const LABS = ['524','525','526','527','528'];
+
+  // ── DROP ZONE ──
+  const dropZone  = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileDisplay = document.getElementById('fileNameDisplay');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) fileDisplay.textContent = '📎 ' + fileInput.files[0].name;
+  });
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) fileDisplay.textContent = '📎 ' + e.dataTransfer.files[0].name;
+  });
+
+  // ── RENDER REGISTERED LIST ──
+  function renderRegistered(filter = '') {
+    const softwares = JSON.parse(localStorage.getItem('ccs_softwares') || '[]');
+    const list      = document.getElementById('registeredList');
+    const filtered  = softwares.filter(s =>
+      s.name.toLowerCase().includes(filter.toLowerCase()) ||
+      (s.category || '').toLowerCase().includes(filter.toLowerCase())
+    );
+
+    list.innerHTML = '';
+    if (filtered.length === 0) {
+      list.innerHTML = `<div class="software-empty-state"><span style="font-size:40px;">&#128188;</span><p>No software registered yet.</p></div>`;
+      return;
+    }
+
+    filtered.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'software-reg-item';
+      item.innerHTML = `
+        <div class="software-reg-info">
+          <p class="software-reg-name">${s.name}</p>
+          <p class="software-reg-meta">${s.category || 'Uncategorized'} ${s.desc ? '· ' + s.desc.slice(0,40) + (s.desc.length>40?'…':'') : ''}</p>
+          <p class="software-reg-labs">Labs: ${s.labs && s.labs.length ? s.labs.map(l=>'Lab '+l).join(', ') : 'None'}</p>
+        </div>
+        <button class="software-reg-delete" onclick="deleteSoftware(${s.id})" title="Delete">&#128465;</button>`;
+      list.appendChild(item);
+    });
+  }
+
+  // ── RENDER LAB OVERVIEW ──
+  function renderLabOverview() {
+    const softwares = JSON.parse(localStorage.getItem('ccs_softwares') || '[]');
+    const overview  = document.getElementById('labsOverview');
+    overview.innerHTML = '';
+
+    LABS.forEach(lab => {
+      const count = softwares.filter(s => s.labs && s.labs.includes(lab)).length;
+      const tile  = document.createElement('div');
+      tile.className = 'software-lab-tile';
+      tile.innerHTML = `
+        <p class="software-lab-tile-name">LAB ${lab}</p>
+        <p class="software-lab-tile-count">${count}</p>
+        <p class="software-lab-tile-label">SOFTWARE</p>`;
+      overview.appendChild(tile);
+    });
+  }
+
+  renderRegistered();
+  renderLabOverview();
+
+  // ── SEARCH ──
+  document.getElementById('swSearchInput').addEventListener('input', (e) => {
+    renderRegistered(e.target.value);
+  });
+
+  // ── DELETE SOFTWARE ──
+  window.deleteSoftware = function(id) {
+    if (!confirm('Delete this software?')) return;
+    let softwares = JSON.parse(localStorage.getItem('ccs_softwares') || '[]');
+    softwares = softwares.filter(s => s.id !== id);
+    localStorage.setItem('ccs_softwares', JSON.stringify(softwares));
+    renderRegistered(document.getElementById('swSearchInput').value);
+    renderLabOverview();
+  };
+
+  // ── UPLOAD & REGISTER ──
+  uploadSwBtn.addEventListener('click', () => {
+    const name     = document.getElementById('swName').value.trim();
+    const category = document.getElementById('swCategory').value;
+    const desc     = document.getElementById('swDesc').value.trim();
+    const labs     = [...document.querySelectorAll('.sw-lab-check:checked')].map(c => c.value);
+
+    if (!name) { alert('Please enter a software / file name.'); return; }
+    if (!category) { alert('Please select a category.'); return; }
+
+    const softwares = JSON.parse(localStorage.getItem('ccs_softwares') || '[]');
+    softwares.push({
+      id:       Date.now(),
+      name,
+      category,
+      desc,
+      labs,
+      date:     getNow(),
+    });
+    localStorage.setItem('ccs_softwares', JSON.stringify(softwares));
+
+    // Clear form
+    document.getElementById('swName').value     = '';
+    document.getElementById('swCategory').value = '';
+    document.getElementById('swDesc').value     = '';
+    document.querySelectorAll('.sw-lab-check').forEach(c => c.checked = false);
+    fileDisplay.textContent = '';
+
+    renderRegistered(document.getElementById('swSearchInput').value);
+    renderLabOverview();
+
+    showPopup({
+      title:   'Software Registered!',
+      message: `<strong>${name}</strong> has been added successfully.`,
+      btnText: 'OK',
+      type:    'success',
+    });
   });
 
   initSearchModal();
