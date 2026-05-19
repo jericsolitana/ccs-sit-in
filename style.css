@@ -3918,3 +3918,217 @@ main {
   .software-grid { grid-template-columns: 1fr; }
   .software-labs-overview { grid-template-columns: repeat(2, 1fr); }
 }
+
+
+/* ======================================
+   PASTE THIS AT THE BOTTOM OF style.css
+   ====================================== */
+
+/* ── DARK MODE TOGGLE BUTTON ── */
+.btn-darkmode {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  line-height: 1;
+}
+.btn-darkmode:hover { background: rgba(255,255,255,0.25); }
+
+/* ======================================
+   DARK MODE STYLES
+   ====================================== */
+body.dark-mode {
+  background-color: #13141a !important;
+  color: #e0e0e0;
+}
+
+/* Navbars */
+body.dark-mode nav,
+body.dark-mode .admin-nav { background-color: #0d1117 !important; }
+
+/* Cards */
+body.dark-mode .card,
+body.dark-mode .dash-card,
+body.dark-mode .admin-card,
+body.dark-mode .ep-card,
+body.dark-mode .register-wrapper,
+body.dark-mode .right-panel,
+body.dark-mode .modal-box,
+body.dark-mode .search-box,
+body.dark-mode .popup-box,
+body.dark-mode .sitin-modal-box,
+body.dark-mode .history-card,
+body.dark-mode .summary-card,
+body.dark-mode .lb-card,
+body.dark-mode .analytics-card,
+body.dark-mode .analytics-stat-card,
+body.dark-mode .summary-stat-card,
+body.dark-mode .software-upload-card,
+body.dark-mode .software-registered-card,
+body.dark-mode .software-overview-card,
+body.dark-mode .labstatus-section,
+body.dark-mode .res-panel,
+body.dark-mode .students-table-wrap,
+body.dark-mode .lab-card,
+body.dark-mode .software-card,
+body.dark-mode .lb-table-card,
+body.dark-mode .lb-rank-card { background-color: #1e2130 !important; color: #e0e0e0; }
+
+/* Tables */
+body.dark-mode .students-table thead tr,
+body.dark-mode .lb-table thead tr,
+body.dark-mode .analytics-table thead tr { background-color: #252838 !important; }
+
+body.dark-mode .students-table th,
+body.dark-mode .lb-table th,
+body.dark-mode .analytics-table th { color: #aab0c0 !important; border-bottom-color: #2e3248 !important; }
+
+body.dark-mode .students-table td,
+body.dark-mode .lb-table td,
+body.dark-mode .analytics-table td { color: #c8ccd8 !important; border-bottom-color: #252838 !important; }
+
+body.dark-mode .students-table tbody tr:hover,
+body.dark-mode .lb-table tbody tr:hover,
+body.dark-mode .analytics-table tbody tr:hover { background-color: #252838 !important; }
+
+/* Inputs & selects */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: #252838 !important;
+  color: #e0e0e0 !important;
+  border-color: #3a3f58 !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder { color: #666 !important; }
+
+body.dark-mode input:disabled { background-color: #1a1d2a !important; color: #555 !important; }
+
+/* Main backgrounds */
+body.dark-mode main,
+body.dark-mode .ep-main,
+body.dark-mode .students-main,
+body.dark-mode .sitin-main,
+body.dark-mode .records-main,
+body.dark-mode .reports-main,
+body.dark-mode .feedback-main,
+body.dark-mode .reservation-main,
+body.dark-mode .history-main,
+body.dark-mode .summary-main,
+body.dark-mode .leaderboard-main,
+body.dark-mode .analytics-main,
+body.dark-mode .software-main,
+body.dark-mode .labstatus-main,
+body.dark-mode .admin-main { background-color: #13141a !important; }
+
+/* Text colors */
+body.dark-mode .form-title,
+body.dark-mode .view-name,
+body.dark-mode .students-title,
+body.dark-mode .sitin-title,
+body.dark-mode .records-title,
+body.dark-mode .reports-title,
+body.dark-mode .history-title,
+body.dark-mode .analytics-title,
+body.dark-mode .software-title,
+body.dark-mode .ep-title,
+body.dark-mode .lb-card-title { color: #e0e0e0 !important; }
+
+body.dark-mode .form-sub,
+body.dark-mode .ep-hint,
+body.dark-mode .ep-group label,
+body.dark-mode .form-group label,
+body.dark-mode .modal-group label,
+body.dark-mode .entries-label,
+body.dark-mode .table-search-wrap,
+body.dark-mode .entries-info { color: #aab0c0 !important; }
+
+/* Announcement items */
+body.dark-mode .announcement-item { background: #252838 !important; }
+body.dark-mode .announce-body { color: #c0c4d0 !important; }
+
+/* Rules */
+body.dark-mode .rules-body,
+body.dark-mode .rules-list li,
+body.dark-mode .rules-intro,
+body.dark-mode .rules-header { color: #aab0c0 !important; }
+
+/* Posted items */
+body.dark-mode .posted-item { border-bottom-color: #2e3248 !important; }
+body.dark-mode .posted-author { color: #e0e0e0 !important; }
+body.dark-mode .posted-body { color: #aab0c0 !important; }
+
+/* Search results */
+body.dark-mode .search-result-item { background: #252838 !important; border-color: #3a3f58 !important; }
+body.dark-mode .search-result-name { color: #e0e0e0 !important; }
+body.dark-mode .search-result-details { color: #888 !important; }
+
+/* Dropdown */
+body.dark-mode .dropdown-menu { background: #1e2130 !important; border-color: #3a3f58; }
+body.dark-mode .dropdown-menu li a { color: #c0c4d0 !important; }
+body.dark-mode .dropdown-menu li a:hover { background: #252838 !important; }
+
+/* Modal overlays */
+body.dark-mode .modal-header { background-color: #0d1117 !important; }
+body.dark-mode .modal-footer { border-top-color: #2e3248 !important; }
+body.dark-mode .modal-cancel-btn { background: #252838 !important; color: #c0c4d0 !important; border-color: #3a3f58 !important; }
+
+/* Stats */
+body.dark-mode .stats-counts p { color: #c0c4d0 !important; }
+body.dark-mode .stats-counts strong { color: #e0e0e0 !important; }
+body.dark-mode .analytics-stat-label { color: #888 !important; }
+body.dark-mode .analytics-stat-number { color: #e0e0e0 !important; }
+
+/* Summary */
+body.dark-mode .summary-stat-number { color: #e0e0e0 !important; }
+body.dark-mode .summary-stat-label  { color: #888 !important; }
+body.dark-mode .summary-activity-purpose { color: #e0e0e0 !important; }
+body.dark-mode .summary-activity-meta    { color: #666 !important; }
+
+/* Lab cards */
+body.dark-mode .lab-card   { border-color: #3a3f58 !important; }
+body.dark-mode .lab-card-name { color: #e0e0e0 !important; }
+body.dark-mode .lab-card-pcs  { color: #888 !important; }
+body.dark-mode .lab-card-footer { border-top-color: #2e3248 !important; }
+
+/* Software */
+body.dark-mode .software-dropzone { border-color: #3a3f58 !important; }
+body.dark-mode .software-reg-item { background: #252838 !important; border-color: #3a3f58 !important; }
+body.dark-mode .software-reg-name { color: #e0e0e0 !important; }
+body.dark-mode .software-reg-meta { color: #888 !important; }
+body.dark-mode .software-lab-tile { border-color: #3a3f58 !important; }
+body.dark-mode .software-lab-tile-count { color: #e0e0e0 !important; }
+
+/* View info */
+body.dark-mode .view-info-item { background: #252838 !important; border-color: #3a3f58 !important; }
+body.dark-mode .view-info-label { color: #888 !important; }
+body.dark-mode .view-info-value { color: #e0e0e0 !important; }
+body.dark-mode .view-id { background: #1a2540 !important; }
+
+/* Left panel register */
+body.dark-mode .left-panel { background: linear-gradient(160deg, #0d1117 0%, #1a2540 100%) !important; }
+
+/* Leaderboard */
+body.dark-mode .lb-rank-label  { color: #888 !important; }
+body.dark-mode .lb-stat-label  { color: #888 !important; }
+body.dark-mode .lb-stat-number { color: #e0e0e0 !important; }
+body.dark-mode .lb-stats-row   { border-top-color: #2e3248 !important; }
+
+/* Notif menu */
+body.dark-mode .notif-menu { background: #1e2130 !important; }
+body.dark-mode .notif-item-text { color: #c0c4d0 !important; }
+
+/* Sitin student card */
+body.dark-mode .sitin-student-card { background: #252838 !important; }
+body.dark-mode .sitin-student-info h4 { color: #e0e0e0 !important; }
+body.dark-mode .sitin-admin-field select { background: #252838 !important; color: #e0e0e0 !important; }
+
+/* Res panel */
+body.dark-mode .res-request-item { background: #252838 !important; border-color: #3a3f58 !important; }
+body.dark-mode .res-log-item { border-bottom-color: #2e3248 !important; color: #c0c4d0 !important; }
+body.dark-mode .res-empty { color: #555 !important; }
